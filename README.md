@@ -8,6 +8,7 @@ git clone git@github.com:Spotnana-Tech/sec-jumpcloud-client-go.git
 cd sec-jumpcloud-client-go
 go test -v
 ```
+
 #### Test Output
 ```shell
 === RUN   TestCreateAndDeleteUserGroup
@@ -25,7 +26,7 @@ package main
 
 import (
     "fmt"
-    "github.com/Spotnana-Tech/sec-jumpcloud-client-go/jumpcloud"
+    "github.com/Spotnana-Tech/sec-jumpcloud-client-go"
 )
 
 func main() {
