@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -17,7 +18,7 @@ func (jc *JC) GetAllUserGroups() (allUserGroups []UserGroup, err error) {
 		jc.Url.String(),
 		nil,
 	)
-
+	fmt.Println(jc.Headers)
 	request.Header = jc.Headers
 	response, _ := jc.Client.Do(request)
 

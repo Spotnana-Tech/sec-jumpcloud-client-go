@@ -9,30 +9,25 @@ import (
 	"time"
 )
 
+var _ = godotenv.Load()
+var Jumpcloud = JC{
+	Url: url.URL{
+		Scheme:   "https",
+		Host:     "console.jumpcloud.com",
+		RawQuery: "limit=100&skip=0",
+	},
+	Headers: http.Header{
+		"Accept":       {"application/json"},
+		"Content-Type": {"application/json"},
+		"x-api-key":    {os.Getenv("JC_API_KEY")}, // Jumpcloud API via env var, maybe pull from config file?
+	},
+	Client: http.Client{Timeout: 10 * time.Second},
+}
+
 func main() {
 	start := time.Now()
-	// Load .env file for api key
-	err := godotenv.Load()
-	if err != nil {
-		return
-	}
-	// Create our Jumpcloud API client
-	Jumpcloud := JC{
-		Url: url.URL{
-			Scheme:   "https",
-			Host:     "console.jumpcloud.com",
-			Path:     "/api",
-			RawQuery: "limit=100&skip=0",
-		},
-		Headers: http.Header{
-			"Accept":       {"application/json"},
-			"Content-Type": {"application/json"},
-			"x-api-key":    {os.Getenv("JC_API_KEY")}, // Jumpcloud API via env var, maybe pull from config file?
-		},
-		Client: http.Client{Timeout: 10 * time.Second},
-	}
 
-	groups, err := Jumpcloud.GetAllUserGroups() // Get all groups
+	groups, _ := Jumpcloud.GetAllUserGroups() // Get all groups
 	fmt.Println("Total Groups:", len(groups))
 	elapsed := time.Since(start)
 	fmt.Println("[!] Total runtime:", elapsed.Round(time.Millisecond))
