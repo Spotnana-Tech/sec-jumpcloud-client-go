@@ -1,16 +1,17 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"net/http"
 	"strconv"
 )
 
-func (jc *JC) GetGroups() (allGroups []UserGroup, err error) {
+func (jc *JC) GetAllUserGroups() (allUserGroups []UserGroup, err error) {
 	var totalRecords int
 	// Set API call details and make the request
-	jc.Url.Path = "/api/v2/groups"
+	jc.Url.Path = "/api/v2/usergroups"
 	request, err := http.NewRequest(
 		http.MethodGet,
 		jc.Url.String(),
@@ -23,10 +24,10 @@ func (jc *JC) GetGroups() (allGroups []UserGroup, err error) {
 	// Set our totalRecords count and pull out data out
 	totalRecords, _ = strconv.Atoi(response.Header.Get("x-total-count")) // Converting str to int
 	body, _ := io.ReadAll(response.Body)                                 // response body is []byte
-	err = json.Unmarshal(body, &allGroups)                               // Unmarshal the JSON into our struct
+	err = json.Unmarshal(body, &allUserGroups)                           // Unmarshal the JSON into our struct
 
 	// While all groups is less than the total number of records...
-	if len(allGroups) < totalRecords {
+	if len(allUserGroups) < totalRecords {
 
 		var tempData []UserGroup // Create a temp slice to hold the data
 		stepValue, _ := strconv.Atoi(jc.Url.Query().Get("limit"))
@@ -38,10 +39,62 @@ func (jc *JC) GetGroups() (allGroups []UserGroup, err error) {
 		response, _ := jc.Client.Do(request)
 		body, _ := io.ReadAll(response.Body) // response body is []byte
 		_ = json.Unmarshal(body, &tempData)
-		allGroups = append(allGroups, tempData...)
+		allUserGroups = append(allUserGroups, tempData...)
 
 	}
-	return allGroups, err
+	return allUserGroups, err
+}
+
+func (jc *JC) GetUserGroup(groupId string) (userGroup map[string]any, err error) {
+	// Set API call details and make the request
+	jc.Url.Path = "/api/v2/usergroups/" + groupId
+	request, err := http.NewRequest(
+		http.MethodGet,
+		jc.Url.String(),
+		nil,
+	)
+	request.Header = jc.Headers
+	response, _ := jc.Client.Do(request)
+	defer response.Body.Close()
+
+	body, _ := io.ReadAll(response.Body) // response body is []byte
+	err = json.Unmarshal(body, &userGroup)
+	return userGroup, err
+}
+
+func (jc *JC) CreateUserGroup(groupMap map[string]string) (userGroup map[string]string, err error) {
+	// Set API call details and make the request
+	jc.Url.Path = "/api/v2/usergroups"
+	jsonBody, _ := json.Marshal(groupMap)
+	request, err := http.NewRequest(
+		http.MethodPost,
+		jc.Url.String(),
+		bytes.NewReader(jsonBody),
+	)
+	request.Header = jc.Headers
+	response, _ := jc.Client.Do(request)
+	defer response.Body.Close()
+
+	// Set our totalRecords count and pull out data out
+	body, _ := io.ReadAll(response.Body) // response body is []byte
+	err = json.Unmarshal(body, &userGroup)
+	return userGroup, err
+}
+
+func (jc *JC) DeleteUserGroup(groupId string) (err error) {
+	// Set API call details and make the request
+	jc.Url.Path = "/api/v2/usergroups/" + groupId
+	request, err := http.NewRequest(
+		http.MethodDelete,
+		jc.Url.String(),
+		nil,
+	)
+	request.Header = jc.Headers
+	response, _ := jc.Client.Do(request)
+	defer response.Body.Close()
+	//body, _ := io.ReadAll(response.Body) // response body is []byte
+	//err = json.Unmarshal(body, &deleted)
+	return err
 }
 
 func (jc *JC) GetGroupMembers(groupId string) (groupMembers []map[string]string, err error) {
@@ -79,7 +132,6 @@ func (jc *JC) GetGroupMembers(groupId string) (groupMembers []map[string]string,
 }
 
 func (jc *JC) GetUser(userId string) (user User, err error) {
-	// Set API call details and make the request
 	jc.Url.RawQuery = "limit=100&skip=0"
 	jc.Url.Path = "/api/systemusers/" + userId
 	request, err := http.NewRequest(

@@ -6,13 +6,14 @@ import (
 	"time"
 )
 
+// JC is our Jumpcloud API client
 type JC struct {
 	Url     url.URL
 	Headers http.Header
 	Client  http.Client
 }
 
-// from https://docs.jumpcloud.com/api/2.0/index.html#tag/Groups/operation/groups_list
+// UserGroup from https://docs.jumpcloud.com/api/2.0/index.html#tag/Groups/operation/groups_list
 type UserGroup struct {
 	Attributes  map[string]string
 	Description string
@@ -22,7 +23,57 @@ type UserGroup struct {
 	Type        string
 }
 
-// from https://docs.jumpcloud.com/api/1.0/index.html#tag/Systemusers/operation/systemusers_get
+// UserGroupDetails Something is broken about this... using map[string]string for now
+type UserGroupDetails struct {
+	Attributes struct {
+		Sudo struct {
+			Enabled         bool `json:"enabled"`
+			WithoutPassword bool `json:"withoutPassword"`
+		} `json:"sudo"`
+		LdapGroups []struct {
+			Name string `json:"name"`
+		} `json:"ldapGroups"`
+		PosixGroups []struct {
+			ID   int    `json:"id"`
+			Name string `json:"name"`
+		} `json:"posixGroups"`
+		Radius struct {
+			Reply []struct {
+				Name  string `json:"name"`
+				Value string `json:"value"`
+			} `json:"reply"`
+		} `json:"radius"`
+		SambaEnabled bool `json:"sambaEnabled"`
+	} `json:"attributes"`
+	Description string `json:"description"`
+	Email       string `json:"email"`
+	ID          string `json:"id"`
+	MemberQuery struct {
+		QueryType string `json:"queryType"`
+		Filters   []struct {
+			Field    string `json:"field"`
+			Operator string `json:"operator"`
+			Value    string `json:"value"`
+		} `json:"filters"`
+	} `json:"memberQuery"`
+	MemberQueryExemptions []struct {
+		Attributes struct {
+		} `json:"attributes"`
+		ID   string `json:"id"`
+		Type string `json:"type"`
+	} `json:"memberQueryExemptions"`
+	MemberSuggestionsNotify bool   `json:"memberSuggestionsNotify"`
+	MembershipMethod        string `json:"membershipMethod"`
+	Name                    string `json:"name"`
+	SuggestionCounts        struct {
+		Add    int `json:"add"`
+		Remove int `json:"remove"`
+		Total  int `json:"total"`
+	} `json:"suggestionCounts"`
+	Type string `json:"type"`
+}
+
+// User from https://docs.jumpcloud.com/api/1.0/index.html#tag/Systemusers/operation/systemusers_get
 type User struct {
 	Id                string `json:"_id"`
 	AccountLocked     bool   `json:"account_locked"`

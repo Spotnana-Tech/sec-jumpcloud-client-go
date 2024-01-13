@@ -10,13 +10,14 @@ import (
 )
 
 func main() {
+	start := time.Now()
 	// Load .env file for api key
 	err := godotenv.Load()
 	if err != nil {
 		return
 	}
 	// Create our Jumpcloud API client
-	jumpcloudApiClient := JC{
+	Jumpcloud := JC{
 		Url: url.URL{
 			Scheme:   "https",
 			Host:     "console.jumpcloud.com",
@@ -31,19 +32,28 @@ func main() {
 		Client: http.Client{Timeout: 10 * time.Second},
 	}
 
-	// Get all userGroups
-	groups, err := jumpcloudApiClient.GetGroups() // Get all groups
-	for _, group := range groups {
+	groups, err := Jumpcloud.GetAllUserGroups() // Get all groups
+	fmt.Println("Total Groups:", len(groups))
+	elapsed := time.Since(start)
+	fmt.Println("[!] Total runtime:", elapsed.Round(time.Millisecond))
+	/* Example Workflow: Get all Groups, their members, and the member details
+
+	allGroups, err := Jumpcloud.GetAllUserGroups()
+
+	for _, group := range allGroups {
+
 		// Get all groupMembers
-		members, _ := jumpcloudApiClient.GetGroupMembers(group.Id) // Get all members of group.Id
+		members, _ := Jumpcloud.GetGroupMembers(group.Id)
 		fmt.Println(group.Name, "-", group.Id, "-", len(members), "members")
+		fmt.Println("--------------------------------------------------")
 
-		// Get each groupMember's info
-		for _, member := range members {
-			user, _ := jumpcloudApiClient.GetUser(member["id"]) // Get user info for each member
-			fmt.Println(user.Id, user.Displayname, user.Email, user.Department)
-		}
+		// Get group details
+		groupDetails, _ := Jumpcloud.GetUserGroup(group.Id)
+		fmt.Println(groupDetails["id"], groupDetails["name"], groupDetails["description"])
 
-		fmt.Println()
-	}
+			// Get each groupMember's info
+			for _, member := range members {
+				user, _ := Jumpcloud.GetUser(member["id"])
+				fmt.Println(user.Id, user.Displayname, user.Email, user.Department)
+			}*/
 }
