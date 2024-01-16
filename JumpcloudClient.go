@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -18,14 +17,13 @@ func (jc *JC) GetAllUserGroups() (allUserGroups []UserGroup, err error) {
 		jc.Url.String(),
 		nil,
 	)
-	fmt.Println(jc.Headers)
 	request.Header = jc.Headers
-	response, _ := jc.Client.Do(request)
+	response, err := jc.Client.Do(request)
 
 	// Set our totalRecords count and pull out data out
-	totalRecords, _ = strconv.Atoi(response.Header.Get("x-total-count")) // Converting str to int
-	body, _ := io.ReadAll(response.Body)                                 // response body is []byte
-	err = json.Unmarshal(body, &allUserGroups)                           // Unmarshal the JSON into our struct
+	totalRecords, err = strconv.Atoi(response.Header.Get("x-total-count")) // Converting str to int
+	body, err := io.ReadAll(response.Body)                                 // response body is []byte
+	err = json.Unmarshal(body, &allUserGroups)                             // Unmarshal the JSON into our struct
 
 	// While all groups is less than the total number of records...
 	if len(allUserGroups) < totalRecords {
@@ -66,18 +64,18 @@ func (jc *JC) GetUserGroup(groupId string) (userGroup map[string]any, err error)
 func (jc *JC) CreateUserGroup(groupMap map[string]string) (userGroup map[string]string, err error) {
 	// Set API call details and make the request
 	jc.Url.Path = "/api/v2/usergroups"
-	jsonBody, _ := json.Marshal(groupMap)
+	jsonBody, err := json.Marshal(groupMap)
 	request, err := http.NewRequest(
 		http.MethodPost,
 		jc.Url.String(),
 		bytes.NewReader(jsonBody),
 	)
 	request.Header = jc.Headers
-	response, _ := jc.Client.Do(request)
+	response, err := jc.Client.Do(request)
 	defer response.Body.Close()
 
 	// Set our totalRecords count and pull out data out
-	body, _ := io.ReadAll(response.Body) // response body is []byte
+	body, err := io.ReadAll(response.Body) // response body is []byte
 	err = json.Unmarshal(body, &userGroup)
 	return userGroup, err
 }

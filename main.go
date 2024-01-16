@@ -31,6 +31,7 @@ func main() {
 	fmt.Println("Total Groups:", len(groups))
 	elapsed := time.Since(start)
 	fmt.Println("[!] Total runtime:", elapsed.Round(time.Millisecond))
+
 	/* Example Workflow: Get all Groups, their members, and the member details
 
 	allGroups, err := Jumpcloud.GetAllUserGroups()
