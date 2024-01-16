@@ -1,4 +1,4 @@
-package snjumpcloud
+package main
 
 import (
 	"bytes"

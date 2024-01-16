@@ -20,33 +20,31 @@ ok      sec-jumpcloud-client-go 1.417s
 ```
 
 ## Example Usage
-
 ```go
 // Example Workflow: Get all Groups, their members, and the member details
 package main
 
 import (
-	"fmt"
-	"github.com/Spotnana-Tech/sec-jumpcloud-client-go"
+    "fmt"
+    "github.com/Spotnana-Tech/sec-jumpcloud-client-go"
 )
 
 func main() {
 	// Get all userGroups
-	client := snjumpcloud.Client
-	allGroups, err := client.GetAllUserGroups()
+	allGroups, err := Jumpcloud.GetAllUserGroups()
 
 	for _, group := range allGroups {
 		// Get all groupMembers
-		members, _ := client.GetGroupMembers(group.Id)
+		members, _ := Jumpcloud.GetGroupMembers(group.Id)
 		fmt.Println(group.Name, "-", group.Id, "-", len(members), "members")
 
 		// Get group details
-		groupDetails, _ := client.GetUserGroup(group.Id)
+		groupDetails, _ := Jumpcloud.GetUserGroup(group.Id)
 		fmt.Println(groupDetails["id"], groupDetails["name"], groupDetails["description"])
 
 		// Get each groupMember's info
 		for _, member := range members {
-			user, _ := client.GetUser(member["id"])
+			user, _ := Jumpcloud.GetUser(member["id"])
 			fmt.Println(user.Id, user.Displayname, user.Email, user.Department)
 		}
 	}

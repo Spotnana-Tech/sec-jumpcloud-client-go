@@ -1,4 +1,4 @@
-package snjumpcloud
+package main
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// JC is our Client API client
+// JC is our Jumpcloud API client
 type JC struct {
 	Url     url.URL
 	Headers http.Header
