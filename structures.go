@@ -1,4 +1,4 @@
-package jcclient
+package main
 
 import (
 	"net/http"
