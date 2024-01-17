@@ -30,12 +30,12 @@ import (
 )
 
 func main() {
+	// Create a new Jumpcloud client
+	Jumpcloud := jcclient.JCClient
 	// Get all userGroups
 	allGroups, err := Jumpcloud.GetAllUserGroups()
 
 	for _, group := range allGroups {
-		// Create a new Jumpcloud client
-		Jumpcloud := jcclient.JCClient
 		// Get all groupMembers
 		members, _ := Jumpcloud.GetGroupMembers(group.Id)
 		fmt.Println(group.Name, "-", group.Id, "-", len(members), "members")
