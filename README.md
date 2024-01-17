@@ -1,5 +1,6 @@
 # sec-jumpcloud-client-go
 ### A go client for the Jumpcloud API
+[![Tests](https://github.com/Spotnana-Tech/sec-jumpcloud-client-go/actions/workflows/go.yml/badge.svg)](https://github.com/Spotnana-Tech/sec-jumpcloud-client-go/actions/workflows/go.yml)
 
 # Getting Started
 Clone the repo and run tests locally
