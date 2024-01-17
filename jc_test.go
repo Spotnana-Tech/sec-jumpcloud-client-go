@@ -47,3 +47,4 @@ func TestGetAllUserGroups(t *testing.T) {
 }
 
 // TODO More testing!
+// TODO Get user from random membership in All_Employees group ID 6479fcdf1be9850001728dec
