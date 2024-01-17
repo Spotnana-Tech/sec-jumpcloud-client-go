@@ -6,12 +6,12 @@ import (
 
 func TestCreateAndDeleteUserGroup(t *testing.T) {
 	// Create userGroup
-	newGroup, err := Jumpcloud.CreateUserGroup(map[string]string{
+	newGroup, err := JCClient.CreateUserGroup(map[string]string{
 		"name":        "SecJumpcloudTestGroup",
 		"description": "Created via sec-jumpcloud-client-go unit test, if not deleted, please delete me",
 	})
 	// Get userGroup
-	testNewGroup, err := Jumpcloud.GetUserGroup(newGroup["id"])
+	testNewGroup, err := JCClient.GetUserGroup(newGroup["id"])
 
 	// Check for errors, check for identical groupIDs
 	if testNewGroup["id"] == nil || testNewGroup["id"] != newGroup["id"] {
@@ -27,8 +27,8 @@ func TestCreateAndDeleteUserGroup(t *testing.T) {
 	//}
 
 	// Delete userGroup
-	err = Jumpcloud.DeleteUserGroup(newGroup["id"])
-	isGroupDeleted, err := Jumpcloud.GetUserGroup(newGroup["id"])
+	err = JCClient.DeleteUserGroup(newGroup["id"])
+	isGroupDeleted, err := JCClient.GetUserGroup(newGroup["id"])
 	if isGroupDeleted["message"] != "Not Found" {
 		t.Errorf("Unable to delete test-created groupID %v", err)
 
@@ -36,7 +36,7 @@ func TestCreateAndDeleteUserGroup(t *testing.T) {
 }
 
 func TestGetAllUserGroups(t *testing.T) {
-	groups, err := Jumpcloud.GetAllUserGroups()
+	groups, err := JCClient.GetAllUserGroups()
 	if len(groups) == 0 {
 		t.Errorf("No groups returned")
 		t.Errorf("Function Error: %q", err)
