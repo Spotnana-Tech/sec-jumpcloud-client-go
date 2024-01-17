@@ -25,4 +25,6 @@ jobs:
     #   run: go build -v ./...
 
     - name: Test
+      env:
+        JC_API_KEY : ${{ secrets.JC_API_KEY }}
       run: go test -v ./...
