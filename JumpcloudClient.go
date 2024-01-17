@@ -1,12 +1,47 @@
-package main
+package jcclient
 
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/joho/godotenv"
 	"io"
 	"net/http"
+	"net/url"
+	"os"
 	"strconv"
+	"time"
 )
+
+var _ = godotenv.Load()
+var JCClient = JC{
+	// A pre-configured client
+	Url: url.URL{
+		Scheme:   "https",
+		Host:     "console.jumpcloud.com",
+		RawQuery: "limit=100&skip=0",
+	},
+	Headers: http.Header{
+		"Accept":       {"application/json"},
+		"Content-Type": {"application/json"},
+		"x-api-key":    {os.Getenv("JC_API_KEY")}, // JCClient API via env var, maybe pull from config file?
+	},
+	Client: http.Client{Timeout: 10 * time.Second},
+}
+
+func NewClient(ApiKey string) (jc JC) {
+	jc.Url = url.URL{
+		Scheme:   "https",
+		Host:     "console.jumpcloud.com",
+		RawQuery: "limit=100&skip=0",
+	}
+	jc.Headers = http.Header{
+		"Accept":       {"application/json"},
+		"Content-Type": {"application/json"},
+		"x-api-key":    {ApiKey}, // JCClient API via user input
+	}
+	jc.Client = http.Client{Timeout: 10 * time.Second}
+	return jc
+}
 
 func (jc *JC) GetAllUserGroups() (allUserGroups []UserGroup, err error) {
 	var totalRecords int
