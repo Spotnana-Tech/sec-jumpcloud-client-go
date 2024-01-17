@@ -1,44 +1,50 @@
 package jcclient
 
 import (
+	"fmt"
+	"os"
 	"testing"
 )
 
 func TestCreateAndDeleteUserGroup(t *testing.T) {
 	// Create userGroup
-	newGroup, err := JCClient.CreateUserGroup(map[string]string{
+	c, err := NewClient(os.Getenv("JC_API_KEY"))
+	newGroup, err := c.CreateUserGroup(map[string]string{
 		"name":        "SecJumpcloudTestGroup",
 		"description": "Created via sec-jumpcloud-client-go unit test, if not deleted, please delete me",
 	})
+	fmt.Println("New Group ID", newGroup.ID)
 	// Get userGroup
-	testNewGroup, err := JCClient.GetUserGroup(newGroup["id"])
-
+	testNewGroup, err := c.GetUserGroup(newGroup.ID)
+	fmt.Println("Lookup Group ID", testNewGroup.ID)
 	// Check for errors, check for identical groupIDs
-	if testNewGroup["id"] == nil || testNewGroup["id"] != newGroup["id"] {
+	if testNewGroup.ID != newGroup.ID {
 		t.Errorf("Unable to create group, or created group does not match ID lookup %v", err)
 	}
-	//Compare the two
-	//if testNewGroup["id"] != newGroup["id"] {
-	//	t.Logf("Created groupID %v does not match %v",
-	//		newGroup["id"],
-	//		testNewGroup["id"],
-	//	)
-	//	t.Errorf("Function Error: %v", err)
-	//}
 
 	// Delete userGroup
-	err = JCClient.DeleteUserGroup(newGroup["id"])
-	isGroupDeleted, err := JCClient.GetUserGroup(newGroup["id"])
-	if isGroupDeleted["message"] != "Not Found" {
+	err = c.DeleteUserGroup(newGroup.ID)
+	isGroupDeleted, err := c.GetUserGroup(newGroup.ID)
+	// Check for errors, check for empty groupID
+	if isGroupDeleted.ID == "" {
+		fmt.Println("Group ID", newGroup.ID, "Deleted")
+	}
+	if isGroupDeleted.ID != "" {
 		t.Errorf("Unable to delete test-created groupID %v", err)
-
 	}
 }
 
 func TestGetAllUserGroups(t *testing.T) {
-	groups, err := JCClient.GetAllUserGroups()
+	c, err := NewClient(os.Getenv("JC_API_KEY"))
+	groups, err := c.GetAllUserGroups()
+	if len(groups) > 0 {
+		fmt.Println("Total Groups Returned:", len(groups))
+	}
 	if len(groups) == 0 {
 		t.Errorf("No groups returned")
 		t.Errorf("Function Error: %q", err)
 	}
 }
+
+// TODO More testing!
+// TODO Get user from random membership in All_Employees group ID 6479fcdf1be9850001728dec
