@@ -3,7 +3,6 @@ package jcclient
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/joho/godotenv"
 	"io"
 	"net/http"
 	"net/url"
@@ -12,7 +11,8 @@ import (
 	"time"
 )
 
-var _ = godotenv.Load()
+//var _ = godotenv.Load()
+
 var JCClient = JC{
 	// A pre-configured client
 	Url: url.URL{
@@ -28,20 +28,20 @@ var JCClient = JC{
 	Client: http.Client{Timeout: 10 * time.Second},
 }
 
-func NewClient(ApiKey string) (jc JC) {
-	jc.Url = url.URL{
-		Scheme:   "https",
-		Host:     "console.jumpcloud.com",
-		RawQuery: "limit=100&skip=0",
-	}
-	jc.Headers = http.Header{
-		"Accept":       {"application/json"},
-		"Content-Type": {"application/json"},
-		"x-api-key":    {ApiKey}, // JCClient API via user input
-	}
-	jc.Client = http.Client{Timeout: 10 * time.Second}
-	return jc
-}
+//func NewClient(ApiKey string) (jc JC) {
+//	jc.Url = url.URL{
+//		Scheme:   "https",
+//		Host:     "console.jumpcloud.com",
+//		RawQuery: "limit=100&skip=0",
+//	}
+//	jc.Headers = http.Header{
+//		"Accept":       {"application/json"},
+//		"Content-Type": {"application/json"},
+//		"x-api-key":    {ApiKey}, // JCClient API via user input
+//	}
+//	jc.Client = http.Client{Timeout: 10 * time.Second}
+//	return jc
+//}
 
 func (jc *JC) GetAllUserGroups() (allUserGroups []UserGroup, err error) {
 	var totalRecords int
