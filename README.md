@@ -12,42 +12,49 @@ go test -v
 #### Test Output
 ```shell
 === RUN   TestCreateAndDeleteUserGroup
---- PASS: TestCreateAndDeleteUserGroup (1.08s)
+New Group ID 65a856555c27e500013b10da
+Lookup Group ID 65a856555c27e500013b10da
+Group ID 65a856555c27e500013b10da Deleted
+--- PASS: TestCreateAndDeleteUserGroup (0.80s)
 === RUN   TestGetAllUserGroups
---- PASS: TestGetAllUserGroups (0.14s)
+Total Groups Returned: 95
+--- PASS: TestGetAllUserGroups (0.15s)
 PASS
-ok      sec-jumpcloud-client-go 1.417s
+
 ```
 
 ## Example Usage
+
 ```go
 // Example Workflow: Get all Groups, their members, and the member details
 package main
 
 import (
-    "fmt"
-    "github.com/Spotnana-Tech/sec-jumpcloud-client-go"
+	"fmt"
+	"github.com/Spotnana-Tech/sec-jumpcloud-client-go"
+	"log"
+	"os"
 )
 
 func main() {
-	// Create a new Jumpcloud client
-	Jumpcloud := jcclient.JCClient
-	// Get all userGroups
-	allGroups, err := Jumpcloud.GetAllUserGroups()
+	// Create a new Jumpcloud client, pulling the API key from the environment
+	c, err := jcclient.NewClient(os.Getenv("JC_API_KEY"))
+	if err != nil {
+		log.Panic("Error creating client:", err)
+	}
 
-	for _, group := range allGroups {
-		// Get all groupMembers
-		members, _ := Jumpcloud.GetGroupMembers(group.Id)
-		fmt.Println(group.Name, "-", group.Id, "-", len(members), "members")
+	// Get all groups
+	groups, err := c.GetAllUserGroups()
+	for _, group := range groups {
 
-		// Get group details
-		groupDetails, _ := Jumpcloud.GetUserGroup(group.Id)
-		fmt.Println(groupDetails["id"], groupDetails["name"], groupDetails["description"])
+		// Get all groupMembers in each group
+		members, _ := c.GetGroupMembers(group.ID)
+		fmt.Println(group.Name, group.ID, "-", len(members), "members")
 
-		// Get each groupMember's info
+		// Lookup each member and get their details
 		for _, member := range members {
-			user, _ := Jumpcloud.GetUser(member["id"])
-			fmt.Println(user.Id, user.Displayname, user.Email, user.Department)
+			user, _ := c.GetUser(member.To.ID) // Jumpcloud JSON response is ugly
+			fmt.Println(user.ID, user.Displayname, user.Email, user.Department)
 		}
 	}
 }
