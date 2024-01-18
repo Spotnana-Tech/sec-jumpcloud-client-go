@@ -46,5 +46,18 @@ func TestGetAllUserGroups(t *testing.T) {
 	}
 }
 
+func TestGetAllApps(t *testing.T) {
+	c, err := NewClient(os.Getenv("JC_API_KEY"))
+	apps, err := c.GetAllApplications()
+	fmt.Println(apps)
+	if len(apps) > 0 {
+		fmt.Println("Total Apps Returned:", len(apps))
+	}
+	if len(apps) == 0 {
+		t.Errorf("No apps returned")
+		t.Errorf("Function Error: %q", err)
+	}
+}
+
 // TODO More testing!
 // TODO Get user from random membership in All_Employees group ID 6479fcdf1be9850001728dec

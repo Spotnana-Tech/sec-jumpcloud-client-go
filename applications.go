@@ -11,6 +11,7 @@ import (
 func (c *Client) GetAllApplications() (allApplications AllApps, err error) {
 	totalApps := 0
 	c.HostURL.Path = "/api/v2/applications/"
+	c.HostURL.RawQuery = "limit=100&skip=0"
 	req, err := http.NewRequest(http.MethodGet, c.HostURL.String(), nil)
 	req.Header = c.Headers
 	response, _ := c.HTTPClient.Do(req)
