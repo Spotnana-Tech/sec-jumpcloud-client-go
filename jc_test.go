@@ -2,6 +2,7 @@ package jcclient
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"testing"
 )
@@ -49,12 +50,28 @@ func TestGetAllUserGroups(t *testing.T) {
 func TestGetAllApps(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	apps, err := c.GetAllApplications()
-	fmt.Println(apps)
 	if len(apps) > 0 {
 		fmt.Println("Total Apps Returned:", len(apps))
 	}
 	if len(apps) == 0 {
 		t.Errorf("No apps returned")
+		t.Errorf("Function Error: %q", err)
+	}
+}
+
+func TestGetRandomUser(t *testing.T) {
+	c, err := NewClient(os.Getenv("JC_API_KEY"))
+	allEmployeesGroupId := "6479fcdf1be9850001728dec"
+	users, err := c.GetGroupMembers(allEmployeesGroupId)
+	randomInt := rand.Int() % len(users)
+	randomUserId := users[randomInt].To.ID
+	fmt.Println("Total Users Returned:", len(users))
+	fmt.Println("Random User ID Selected:", randomUserId)
+	randomUser, err := c.GetUser(randomUserId)
+	fmt.Println("Random User ID Lookup:", randomUser.ID, randomUser.Email)
+	if randomUser.ID == "" {
+
+		t.Errorf("No user returned")
 		t.Errorf("Function Error: %q", err)
 	}
 }

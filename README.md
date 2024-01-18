@@ -8,25 +8,9 @@ git clone git@github.com:Spotnana-Tech/sec-jumpcloud-client-go.git
 cd sec-jumpcloud-client-go
 go test -v
 ```
-
-#### Test Output
-```shell
-=== RUN   TestCreateAndDeleteUserGroup
-New Group ID 65a856555c27e500013b10da
-Lookup Group ID 65a856555c27e500013b10da
-Group ID 65a856555c27e500013b10da Deleted
---- PASS: TestCreateAndDeleteUserGroup (0.80s)
-=== RUN   TestGetAllUserGroups
-Total Groups Returned: 95
---- PASS: TestGetAllUserGroups (0.15s)
-PASS
-
-```
-
 ## Example Usage
-
+Below is a simple example of how to use the client to get all groups and their members.
 ```go
-// Example Workflow: Get all Groups, their members, and the member details
 package main
 
 import (
@@ -42,19 +26,17 @@ func main() {
 	if err != nil {
 		log.Panic("Error creating client:", err)
 	}
-
-	// Get all groups
-	groups, err := c.GetAllUserGroups()
-	for _, group := range groups {
-
-		// Get all groupMembers in each group
-		members, _ := c.GetGroupMembers(group.ID)
+    
+	groups, err := c.GetAllUserGroups()             // Get all groups
+	for _, group := range groups {                  // Loop through each group
+		members, _ := c.GetGroupMembers(group.ID)   // Get all groupMembers in each group
 		fmt.Println(group.Name, group.ID, "-", len(members), "members")
-
-		// Lookup each member and get their details
-		for _, member := range members {
-			user, _ := c.GetUser(member.To.ID) // Jumpcloud JSON response is ugly
+		// example-group 1234567890 - 21 members
+		
+		for _, member := range members {        // Loop through each groupMember
+			user, _ := c.GetUser(member.To.ID) // Lookup each member and get their details
 			fmt.Println(user.ID, user.Displayname, user.Email, user.Department)
+			// 0987654321 John Doe jdoe@spotnana.com Engineering
 		}
 	}
 }
