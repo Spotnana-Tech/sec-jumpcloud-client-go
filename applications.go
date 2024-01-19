@@ -2,7 +2,6 @@ package jcclient
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -68,7 +67,6 @@ func (c *Client) GetAppAssociations(appId string) (appAssociations AppAssociatio
 	response, _ := c.HTTPClient.Do(req)
 	body, _ := io.ReadAll(response.Body) // response body is []byte
 	err = json.Unmarshal(body, &appAssociations)
-	fmt.Println(response.Status)
 	totalAssociations, err = strconv.Atoi(response.Header.Get("x-total-count"))
 	// While all groups is less than the total number of records...
 	if len(appAssociations) < totalAssociations {
