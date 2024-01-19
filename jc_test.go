@@ -11,8 +11,8 @@ func TestCreateAndDeleteUserGroup(t *testing.T) {
 	// Create userGroup
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	newGroup, err := c.CreateUserGroup(map[string]string{
-		"name":        "SecJumpcloudTestGroup",
-		"description": "Created via sec-jumpcloud-client-go unit test, if not deleted, please delete me",
+		"name":        "sec-jumpcloud-client-go-unit-test",
+		"description": "Created via sec-jumpcloud-client-go unit test, please delete me!",
 	})
 	fmt.Println("New Group ID", newGroup.ID)
 	// Get userGroup
@@ -68,7 +68,7 @@ func TestGetRandomUser(t *testing.T) {
 	fmt.Println("Total Users Returned:", len(users))
 	fmt.Println("Random User ID Selected:", randomUserId)
 	randomUser, err := c.GetUser(randomUserId)
-	fmt.Println("Random User ID Lookup:", randomUser.ID, randomUser.Email)
+	fmt.Println("Random User ID Lookup:", randomUser.ID)
 	if randomUser.ID == "" {
 
 		t.Errorf("No user returned")
