@@ -450,3 +450,15 @@ type AppDetail struct {
 	Status       string `json:"status,omitempty"`
 	Organization string `json:"organization,omitempty"`
 }
+type AppAssociations []struct {
+	Attributes any `json:"attributes,omitempty"`
+	To         struct {
+		Attributes struct {
+			LdapGroups []struct {
+				Name string `json:"name,omitempty"`
+			} `json:"ldapGroups,omitempty"`
+		} `json:"attributes,omitempty"`
+		ID   string `json:"id,omitempty"`
+		Type string `json:"type,omitempty"`
+	} `json:"to,omitempty"`
+}

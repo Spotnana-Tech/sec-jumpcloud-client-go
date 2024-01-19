@@ -76,5 +76,17 @@ func TestGetRandomUser(t *testing.T) {
 	}
 }
 
+func TestGetApp(t *testing.T) {
+	c, err := NewClient(os.Getenv("JC_API_KEY"))
+	app, err := c.GetApplication("64798af00ee9439afdfd9955")
+	associations, err := c.GetAppAssociations("64798af00ee9439afdfd9955")
+	fmt.Println("Total Associations Returned:", len(associations))
+	fmt.Println(associations)
+	if app.ID != "64798af00ee9439afdfd9955" {
+		t.Errorf("No app returned")
+		t.Errorf("Function Error: %q", err)
+	}
+}
+
 // TODO More testing!
 // TODO Get user from random membership in All_Employees group ID 6479fcdf1be9850001728dec
