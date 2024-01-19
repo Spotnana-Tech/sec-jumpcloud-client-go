@@ -420,3 +420,33 @@ type App struct {
 	Status       string `json:"status,omitempty"`
 	Organization string `json:"organization,omitempty"`
 }
+type AppDetail struct {
+	ID           string `json:"_id,omitempty"`
+	Name         string `json:"name,omitempty"`
+	CatalogItem  any    `json:"catalogItem,omitempty"`
+	DisplayName  string `json:"displayName,omitempty"`
+	DisplayLabel string `json:"displayLabel,omitempty"`
+	Description  string `json:"description,omitempty"`
+	Color        any    `json:"color,omitempty"`
+	Logo         struct {
+		URL string `json:"url,omitempty"`
+	} `json:"logo,omitempty"`
+	Provision any `json:"provision,omitempty"`
+	Sso       struct {
+		Hidden                  bool      `json:"hidden,omitempty"`
+		IdpCertificateUpdatedAt time.Time `json:"idpCertificateUpdatedAt,omitempty"`
+		IdpPrivateKeyUpdatedAt  time.Time `json:"idpPrivateKeyUpdatedAt,omitempty"`
+		IdpCertExpirationAt     time.Time `json:"idpCertExpirationAt,omitempty"`
+		Beta                    bool      `json:"beta,omitempty"`
+		Type                    string    `json:"type,omitempty"`
+		URL                     string    `json:"url,omitempty"`
+		Active                  bool      `json:"active,omitempty"`
+		CertExpired             bool      `json:"certExpired,omitempty"`
+		Jit                     struct {
+			Supported bool `json:"supported,omitempty"`
+			Enabled   bool `json:"enabled,omitempty"`
+		} `json:"jit,omitempty"`
+	} `json:"sso,omitempty"`
+	Status       string `json:"status,omitempty"`
+	Organization string `json:"organization,omitempty"`
+}

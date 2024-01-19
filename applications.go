@@ -46,3 +46,14 @@ func (c *Client) GetAllApplications() (allApplications AllApps, err error) {
 	}
 	return allApplications, err
 }
+
+// GetApplication returns a single application
+func (c *Client) GetApplication(appId string) (application AppDetail, err error) {
+	c.HostURL.Path = "/api/v2/applications/" + appId
+	req, err := http.NewRequest(http.MethodGet, c.HostURL.String(), nil)
+	req.Header = c.Headers
+	response, _ := c.HTTPClient.Do(req)
+	body, _ := io.ReadAll(response.Body) // response body is []byte
+	err = json.Unmarshal(body, &application)
+	return application, err
+}

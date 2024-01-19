@@ -10,6 +10,8 @@ import (
 
 const HostURL = "https://console.jumpcloud.com"
 
+// TODO: Add pagination function, add HTTPrequest function
+
 type Client struct {
 	HostURL    *url.URL // or string for simplicity
 	HTTPClient *http.Client
