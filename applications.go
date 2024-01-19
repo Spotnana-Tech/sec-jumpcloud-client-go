@@ -57,8 +57,8 @@ func (c *Client) GetApplication(appId string) (application AppDetail, err error)
 	return application, err
 }
 
-// GetAppAssociations returns a single application
-func (c *Client) GetAppAssociations(appId string) (appAssociations AppAssociations, err error) {
+// GetAppGroupAssociations returns a single application
+func (c *Client) GetAppGroupAssociations(appId string) (appAssociations AppAssociations, err error) {
 	totalAssociations := 0
 	c.HostURL.Path = "/api/v2/applications/" + appId + "/associations"
 	c.HostURL.RawQuery = "targets=user_group&limit=100&skip=0"
