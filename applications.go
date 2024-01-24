@@ -124,6 +124,7 @@ func (c *Client) AssociateGroupWithApp(appId string, groupId string) (err error)
 	req, err := http.NewRequest(http.MethodPost, c.HostURL.String(), bodyReader)
 	req.Header = c.Headers
 	response, err := c.HTTPClient.Do(req)
+	defer response.Body.Close()
 	if response.StatusCode == 204 {
 		// 204 = OK
 		return err
@@ -144,6 +145,7 @@ func (c *Client) RemoveGroupFromApp(appId string, groupId string) (err error) {
 	req, err := http.NewRequest(http.MethodPost, c.HostURL.String(), bodyReader)
 	req.Header = c.Headers
 	response, err := c.HTTPClient.Do(req)
+	defer response.Body.Close()
 	if response.StatusCode == 204 {
 		// 204 -- OK
 		return err

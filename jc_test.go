@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestCreateAndDeleteUserGroup(t *testing.T) {
+func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 	// Create userGroup
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	newGroup, err := c.CreateUserGroup(map[string]string{
@@ -30,7 +30,7 @@ func TestCreateAndDeleteUserGroup(t *testing.T) {
 	}
 }
 
-func TestGetAllUserGroups(t *testing.T) {
+func TestClient_UserGroups_GetAllUserGroups(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	groups, err := c.GetAllUserGroups()
 
@@ -40,17 +40,7 @@ func TestGetAllUserGroups(t *testing.T) {
 	}
 }
 
-func TestGetAllApps(t *testing.T) {
-	c, err := NewClient(os.Getenv("JC_API_KEY"))
-	apps, err := c.GetAllApplications()
-
-	if len(apps) == 0 {
-		t.Errorf("No apps returned")
-		t.Errorf("Function Error: %q", err)
-	}
-}
-
-func TestGetRandomUser(t *testing.T) {
+func TestClient_Users_GetRandomUser(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	groupId := "6479fcdf1be9850001728dec"
 	users, err := c.GetGroupMembers(groupId)
@@ -73,7 +63,17 @@ func TestGetRandomUser(t *testing.T) {
 	}
 }
 
-func TestGetApp(t *testing.T) {
+func TestClient_Apps_GetAllApps(t *testing.T) {
+	c, err := NewClient(os.Getenv("JC_API_KEY"))
+	apps, err := c.GetAllApplications()
+
+	if len(apps) == 0 {
+		t.Errorf("No apps returned")
+		t.Errorf("Function Error: %q", err)
+	}
+}
+
+func TestClient_Apps_GetApp(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	app, err := c.GetApplication("64798af00ee9439afdfd9955")
 
@@ -92,7 +92,7 @@ func TestGetApp(t *testing.T) {
 }
 
 // TODO This test is broken, runs too slow, useless
-//func TestClient_GetAllAppAssociations(t *testing.T) {
+//func TestClient_Apps_Client_GetAllAppAssociations(t *testing.T) {
 //	c, err := NewClient(os.Getenv("JC_API_KEY"))
 //	app, err := c.GetApplication("64798af00ee9439afdfd9955")
 //
@@ -110,7 +110,7 @@ func TestGetApp(t *testing.T) {
 //	}
 //}
 
-func TestClient_AssociateGroupWithApp(t *testing.T) {
+func TestClient_Apps_AssociateGroupWithApp(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	newGroup, err := c.CreateUserGroup(map[string]string{
 		"name":        "sec-jumpcloud-client-go-unit-test-app-association",
