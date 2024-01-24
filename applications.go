@@ -1,13 +1,14 @@
 package jcclient
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"net/http"
 	"strconv"
 )
 
-// GetAllApplications is a struct that represents a Jumpcloud user group
+// GetAllApplications returns all applications
 func (c *Client) GetAllApplications() (allApplications AllApps, err error) {
 	totalApps := 0
 	c.HostURL.Path = "/api/v2/applications/"
@@ -57,11 +58,13 @@ func (c *Client) GetApplication(appId string) (application AppDetail, err error)
 	return application, err
 }
 
-// GetAppGroupAssociations returns a single application
-func (c *Client) GetAppGroupAssociations(appId string) (appAssociations AppAssociations, err error) {
+// GetAppAssociations returns a single application
+// groupType can be either "user_group" or "user"
+func (c *Client) GetAppAssociations(appId string, groupType string) (appAssociations AppAssociations, err error) {
 	totalAssociations := 0
 	c.HostURL.Path = "/api/v2/applications/" + appId + "/associations"
-	c.HostURL.RawQuery = "targets=user_group&limit=100&skip=0"
+	c.HostURL.RawQuery = "targets=" + groupType + "&limit=100&skip=0"
+	//c.HostURL.RawQuery = "targets=user_group&limit=100&skip=0"
 	req, err := http.NewRequest(http.MethodGet, c.HostURL.String(), nil)
 	req.Header = c.Headers
 	response, _ := c.HTTPClient.Do(req)
@@ -89,4 +92,61 @@ func (c *Client) GetAppGroupAssociations(appId string) (appAssociations AppAssoc
 		}
 	}
 	return appAssociations, err
+}
+
+// GetAllAppAssociations returns all app associations for user_groups and users
+// This mas not be needed due only utilizing user_groups for app association.
+func (c *Client) GetAllAppAssociations() (allData []map[string]interface{}, err error) {
+	apps, _ := c.GetAllApplications()
+	for _, app := range apps {
+		userAssociations, _ := c.GetAppAssociations(app.ID, "user")
+		groupAssociations, _ := c.GetAppAssociations(app.ID, "user_group")
+		result := map[string]interface{}{
+			"user":  userAssociations,
+			"group": groupAssociations,
+		}
+		allData = append(allData, result)
+	}
+
+	return allData, err
+}
+
+// AssociateGroupWithApp associates a group with an application
+func (c *Client) AssociateGroupWithApp(appId string, groupId string) (err error) {
+	c.HostURL.Path = "/api/v2/applications/" + appId + "/associations"
+	j, _ := json.Marshal(map[string]string{
+		"id":   groupId,
+		"op":   "add",
+		"type": "user_group",
+	})
+	bodyReader := bytes.NewReader(j)
+
+	req, err := http.NewRequest(http.MethodPost, c.HostURL.String(), bodyReader)
+	req.Header = c.Headers
+	response, err := c.HTTPClient.Do(req)
+	if response.StatusCode == 204 {
+		// 204 = OK
+		return err
+	}
+	return err
+}
+
+// RemoveGroupFromApp removes a group from an application
+func (c *Client) RemoveGroupFromApp(appId string, groupId string) (err error) {
+	c.HostURL.Path = "/api/v2/applications/" + appId + "/associations"
+	j, _ := json.Marshal(map[string]string{
+		"id":   groupId,
+		"op":   "remove",
+		"type": "user_group",
+	})
+	bodyReader := bytes.NewReader(j)
+
+	req, err := http.NewRequest(http.MethodPost, c.HostURL.String(), bodyReader)
+	req.Header = c.Headers
+	response, err := c.HTTPClient.Do(req)
+	if response.StatusCode == 204 {
+		// 204 -- OK
+		return err
+	}
+	return err
 }
