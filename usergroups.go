@@ -49,7 +49,7 @@ func (c *Client) GetAllUserGroups() (allUserGroups UserGroups, err error) {
 }
 
 // CreateUserGroup creates a new user group
-func (c *Client) CreateUserGroup(newUser map[string]string) (userGroup NewUserGroup, err error) {
+func (c *Client) CreateUserGroup(newUser UserGroup) (userGroup NewUserGroup, err error) {
 	c.HostURL.Path = "/api/v2/usergroups"
 	jsonBody, err := json.Marshal(newUser)
 	request, err := http.NewRequest(
@@ -63,6 +63,18 @@ func (c *Client) CreateUserGroup(newUser map[string]string) (userGroup NewUserGr
 	body, err := io.ReadAll(response.Body)
 	err = json.Unmarshal(body, &userGroup)
 	return userGroup, err
+}
+
+// CreateUserGroups creates multiple user groups
+func (c *Client) CreateUserGroups(newUserGroups []UserGroup) (userGroups []NewUserGroup, err error) {
+	for _, usergroup := range newUserGroups {
+		new, err := c.CreateUserGroup(usergroup)
+		if err != nil {
+			return nil, err
+		}
+		userGroups = append(userGroups, new)
+	}
+	return userGroups, err
 }
 
 // GetUserGroup query for a specific user group by ID

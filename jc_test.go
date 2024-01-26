@@ -9,9 +9,13 @@ import (
 func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 	// Create userGroup
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
-	newGroup, err := c.CreateUserGroup(map[string]string{
-		"name":        "sec-jumpcloud-client-go-unit-test",
-		"description": "Created via sec-jumpcloud-client-go unit test, please delete me!",
+	//newGroup, err := c.CreateUserGroup(map[string]string{
+	//	"name":        "sec-jumpcloud-client-go-unit-test",
+	//	"description": "Created via sec-jumpcloud-client-go unit test, please delete me!",
+	//})
+	newGroup, err := c.CreateUserGroup(UserGroup{
+		Name:        "sec-jumpcloud-client-go-unit-test",
+		Description: "Created via sec-jumpcloud-client-go unit test, please delete me!",
 	})
 
 	// Get userGroup
@@ -27,6 +31,37 @@ func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 
 	if isGroupDeleted.ID != "" {
 		t.Errorf("Unable to delete test-created groupID %v", err)
+	}
+}
+
+func TestClient_UserGroups_CreateMultipleUserGroups(t *testing.T) {
+	// Create userGroup
+	c, _ := NewClient(os.Getenv("JC_API_KEY"))
+	newGroups := []UserGroup{
+		UserGroup{
+			Name:        "sec-jumpcloud-client-go-unit-test-01",
+			Description: "Created via sec-jumpcloud-client-go unit test, please delete me!",
+		},
+		UserGroup{
+			Name:        "sec-jumpcloud-client-go-unit-test-02",
+			Description: "Created via sec-jumpcloud-client-go unit test, please delete me!",
+		},
+	}
+	createdGroups, _ := c.CreateUserGroups(newGroups)
+	for _, createdGroup := range createdGroups {
+		// Get userGroup
+		testNewGroup, err := c.GetUserGroup(createdGroup.ID)
+		// Check for errors, check for identical groupIDs
+		if testNewGroup.ID != createdGroup.ID {
+			t.Errorf("Unable to create group, or created group does not match ID lookup %v", err)
+		}
+		// Delete userGroup
+		err = c.DeleteUserGroup(createdGroup.ID)
+		isGroupDeleted, err := c.GetUserGroup(createdGroup.ID)
+
+		if isGroupDeleted.ID != "" {
+			t.Errorf("Unable to delete test-created groupID %v", err)
+		}
 	}
 }
 
@@ -112,9 +147,9 @@ func TestClient_Apps_GetApp(t *testing.T) {
 
 func TestClient_Apps_AssociateGroupWithApp(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
-	newGroup, err := c.CreateUserGroup(map[string]string{
-		"name":        "sec-jumpcloud-client-go-unit-test-app-association",
-		"description": "Created via sec-jumpcloud-client-go unit test, please delete me!",
+	newGroup, err := c.CreateUserGroup(UserGroup{
+		Name:        "sec-jumpcloud-client-go-unit-test-app-association",
+		Description: "Created via sec-jumpcloud-client-go unit test, please delete me!",
 	})
 	awsSSOPOC, _ := c.GetApplication("632b3aae90fb7290ddb5667d") // AWS SSO POC App ID
 
