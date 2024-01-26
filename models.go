@@ -134,26 +134,26 @@ type UserGroup struct {
 	Type string `json:"type,omitempty"`
 }
 type NewUserGroup struct {
-	Attributes struct {
-		Sudo struct {
-			Enabled         bool `json:"enabled,omitempty"`
-			WithoutPassword bool `json:"withoutPassword,omitempty"`
-		} `json:"sudo,omitempty"`
-		LdapGroups []struct {
-			Name string `json:"name,omitempty"`
-		} `json:"ldapGroups,omitempty"`
-		PosixGroups []struct {
-			ID   int    `json:"id,omitempty"`
-			Name string `json:"name,omitempty"`
-		} `json:"posixGroups,omitempty"`
-		Radius struct {
-			Reply []struct {
-				Name  string `json:"name,omitempty"`
-				Value string `json:"value,omitempty"`
-			} `json:"reply,omitempty"`
-		} `json:"radius,omitempty"`
-		SambaEnabled bool `json:"sambaEnabled,omitempty"`
-	} `json:"attributes,omitempty"`
+	//Attributes struct {
+	//	Sudo struct {
+	//		Enabled         bool `json:"enabled,omitempty"`
+	//		WithoutPassword bool `json:"withoutPassword,omitempty"`
+	//	} `json:"sudo,omitempty"`
+	//	LdapGroups []struct {
+	//		Name string `json:"name,omitempty"`
+	//	} `json:"ldapGroups,omitempty"`
+	//	PosixGroups []struct {
+	//		ID   int    `json:"id,omitempty"`
+	//		Name string `json:"name,omitempty"`
+	//	} `json:"posixGroups,omitempty"`
+	//	Radius struct {
+	//		Reply []struct {
+	//			Name  string `json:"name,omitempty"`
+	//			Value string `json:"value,omitempty"`
+	//		} `json:"reply,omitempty"`
+	//	} `json:"radius,omitempty"`
+	//	SambaEnabled bool `json:"sambaEnabled,omitempty"`
+	//} `json:"attributes,omitempty"`
 	Description string `json:"description,omitempty"`
 	Email       string `json:"email,omitempty"`
 	ID          string `json:"id,omitempty"`
@@ -165,20 +165,20 @@ type NewUserGroup struct {
 			Value    string `json:"value,omitempty"`
 		} `json:"filters,omitempty"`
 	} `json:"memberQuery,omitempty"`
-	MemberQueryExemptions []struct {
-		Attributes struct {
-		} `json:"attributes,omitempty"`
-		ID   string `json:"id,omitempty"`
-		Type string `json:"type,omitempty"`
-	} `json:"memberQueryExemptions,omitempty"`
+	//MemberQueryExemptions []struct {
+	//	Attributes struct {
+	//	} `json:"attributes,omitempty"`
+	//	ID   string `json:"id,omitempty"`
+	//	Type string `json:"type,omitempty"`
+	//} `json:"memberQueryExemptions,omitempty"`
 	MemberSuggestionsNotify bool   `json:"memberSuggestionsNotify,omitempty"`
 	MembershipMethod        string `json:"membershipMethod,omitempty"`
 	Name                    string `json:"name,omitempty"`
-	SuggestionCounts        struct {
-		Add    int `json:"add,omitempty"`
-		Remove int `json:"remove,omitempty"`
-		Total  int `json:"total,omitempty"`
-	} `json:"suggestionCounts,omitempty"`
+	//SuggestionCounts        struct {
+	//	Add    int `json:"add,omitempty"`
+	//	Remove int `json:"remove,omitempty"`
+	//	Total  int `json:"total,omitempty"`
+	//} `json:"suggestionCounts,omitempty"`
 	Type string `json:"type,omitempty"`
 }
 
