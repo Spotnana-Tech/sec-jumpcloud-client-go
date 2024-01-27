@@ -9,17 +9,14 @@ import (
 func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 	// Create userGroup
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
-	//newGroup, err := c.CreateUserGroup(map[string]string{
-	//	"name":        "sec-jumpcloud-client-go-unit-test",
-	//	"description": "Created via sec-jumpcloud-client-go unit test, please delete me!",
-	//})
-	newGroup, err := c.CreateUserGroup(UserGroup{
+	newGroupData := UserGroup{
 		Name:        "sec-jumpcloud-client-go-unit-test",
 		Description: "Created via sec-jumpcloud-client-go unit test, please delete me!",
-	})
-
+	}
+	newGroup, err := c.CreateUserGroup(newGroupData)
 	// Get userGroup
 	testNewGroup, err := c.GetUserGroup(newGroup.ID)
+
 	// Check for errors, check for identical groupIDs
 	if testNewGroup.ID != newGroup.ID {
 		t.Errorf("Unable to create group, or created group does not match ID lookup %v", err)
@@ -47,6 +44,7 @@ func TestClient_UserGroups_CreateMultipleUserGroups(t *testing.T) {
 			Description: "Created via sec-jumpcloud-client-go unit test, please delete me!",
 		},
 	}
+
 	createdGroups, _ := c.CreateUserGroups(newGroups)
 	for _, createdGroup := range createdGroups {
 		// Get userGroup

@@ -78,7 +78,7 @@ func (c *Client) CreateUserGroups(newUserGroups []UserGroup) (userGroups []NewUs
 }
 
 // GetUserGroup query for a specific user group by ID
-func (c *Client) GetUserGroup(groupId string) (userGroup UserGroup, err error) {
+func (c *Client) GetUserGroup(groupId string) (userGroup NewUserGroup, err error) {
 	c.HostURL.Path = "/api/v2/usergroups/" + groupId
 	request, err := http.NewRequest(
 		http.MethodGet,
