@@ -19,7 +19,7 @@ func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 
 	// Get userGroup, by ID and Name
 	testNewGroup, err := c.GetUserGroup(newGroup.ID)
-	testNewGroupByName, err := c.GetGroupByName(testName)
+	testNewGroupByName, err := c.GetUserGroupByName(testName)
 
 	// Check for errors, check for identical groupIDs
 	if testNewGroup.ID != newGroup.ID {

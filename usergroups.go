@@ -145,8 +145,8 @@ func (c *Client) GetGroupMembers(groupId string) (groupMembers GroupMembership, 
 	return groupMembers, err
 }
 
-// GetGroupByName returns a group by name
-func (c *Client) GetGroupByName(groupName string) (userGroup UserGroups, err error) {
+// GetUserGroupByName returns a group by name
+func (c *Client) GetUserGroupByName(groupName string) (userGroup UserGroups, err error) {
 	c.HostURL.Path = "/api/v2/usergroups"
 	// Limiting results to 1, and filtering by name... this should be unique
 	c.HostURL.RawQuery = "limit=1&filter=name:eq:" + groupName
