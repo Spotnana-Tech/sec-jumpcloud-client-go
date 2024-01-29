@@ -30,9 +30,10 @@ func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 	}
 
 	// Update UserGroup name to include "-updated"
-	updatedGroup, err := c.UpdateUserGroup(newGroup.ID, UserGroup{
+	update := UserGroup{
 		Name: testName + "-updated",
-	})
+	}
+	updatedGroup, err := c.UpdateUserGroup(newGroup.ID, update)
 
 	// Verify UserGroup name changed
 	result, err := c.GetUserGroupByName(testName + "-updated")

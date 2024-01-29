@@ -163,6 +163,14 @@ func (c *Client) GetUserGroupByName(groupName string) (userGroup UserGroup, err 
 
 // UpdateUserGroup updates a user group
 func (c *Client) UpdateUserGroup(groupId string, updatedUserGroup UserGroup) (userGroup UserGroup, err error) {
+	// If update does not contain a description field, set it to the old description
+	// We do this because the API will overwrite the description field with an empty string if not passed
+	if updatedUserGroup.Description == "" {
+		oldGroupData, _ := c.GetUserGroup(groupId)
+		if oldGroupData.Description != "" {
+			updatedUserGroup.Description = oldGroupData.Description
+		}
+	}
 	c.HostURL.Path = "/api/v2/usergroups/" + groupId
 	jsonBody, err := json.Marshal(updatedUserGroup)
 	request, err := http.NewRequest(
