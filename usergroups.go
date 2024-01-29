@@ -10,7 +10,6 @@ import (
 
 // GetAllUserGroups returns a list of all users in Jumpcloud
 func (c *Client) GetAllUserGroups() (allUserGroups UserGroups, err error) {
-	totalRecords := 0
 	c.HostURL.Path = "/api/v2/usergroups"
 	c.HostURL.RawQuery = "limit=100&skip=0"
 	req, err := http.NewRequest(http.MethodGet, c.HostURL.String(), nil)
@@ -18,9 +17,9 @@ func (c *Client) GetAllUserGroups() (allUserGroups UserGroups, err error) {
 	response, err := c.HTTPClient.Do(req)
 	defer response.Body.Close()
 	// Set our totalRecords count and pull out data out
-	totalRecords, err = strconv.Atoi(response.Header.Get("x-total-count")) // Converting str to int
-	body, err := io.ReadAll(response.Body)                                 // response body is []byte
-	err = json.Unmarshal(body, &allUserGroups)                             // Unmarshal the JSON into our struct
+	totalRecords, err := strconv.Atoi(response.Header.Get("x-total-count")) // Converting str to int
+	body, err := io.ReadAll(response.Body)                                  // response body is []byte
+	err = json.Unmarshal(body, &allUserGroups)                              // Unmarshal the JSON into our struct
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +108,6 @@ func (c *Client) DeleteUserGroup(groupId string) (err error) {
 
 // GetGroupMembers returns a list of users in a group
 func (c *Client) GetGroupMembers(groupId string) (groupMembers GroupMembership, err error) {
-	totalRecords := 0
 	c.HostURL.Path = "/api/v2/usergroups/" + groupId + "/members"
 	c.HostURL.RawQuery = "limit=100&skip=0"
 	request, err := http.NewRequest(
@@ -121,7 +119,7 @@ func (c *Client) GetGroupMembers(groupId string) (groupMembers GroupMembership, 
 	response, _ := c.HTTPClient.Do(request)
 	defer response.Body.Close()
 
-	totalRecords, _ = strconv.Atoi(response.Header.Get("x-total-count")) // Converting str to int
+	totalRecords, _ := strconv.Atoi(response.Header.Get("x-total-count")) // Converting str to int
 	// Set our totalRecords count and pull out data out
 	body, _ := io.ReadAll(response.Body) // response body is []byte
 	err = json.Unmarshal(body, &groupMembers)
@@ -145,4 +143,18 @@ func (c *Client) GetGroupMembers(groupId string) (groupMembers GroupMembership, 
 		groupMembers = append(groupMembers, tempData...)
 	}
 	return groupMembers, err
+}
+
+// GetGroupByName returns a group by name
+func (c *Client) GetGroupByName(groupName string) (userGroup UserGroups, err error) {
+	c.HostURL.Path = "/api/v2/usergroups"
+	// Limiting results to 1, and filtering by name... this should be unique
+	c.HostURL.RawQuery = "limit=1&filter=name:eq:" + groupName
+	req, err := http.NewRequest(http.MethodGet, c.HostURL.String(), nil)
+	req.Header = c.Headers
+	response, err := c.HTTPClient.Do(req)
+	defer response.Body.Close()
+	body, err := io.ReadAll(response.Body) // response body is []byte
+	err = json.Unmarshal(body, &userGroup) // Unmarshal the JSON into our struct
+	return userGroup, err
 }

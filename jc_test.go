@@ -7,25 +7,33 @@ import (
 )
 
 func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
-	// Create userGroup
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
+
+	// Create userGroup
+	testName := "sec-jumpcloud-client-go-unit-test"
 	newGroupData := UserGroup{
-		Name:        "sec-jumpcloud-client-go-unit-test",
+		Name:        testName,
 		Description: "Created via sec-jumpcloud-client-go unit test, please delete me!",
 	}
 	newGroup, err := c.CreateUserGroup(newGroupData)
-	// Get userGroup
+
+	// Get userGroup, by ID and Name
 	testNewGroup, err := c.GetUserGroup(newGroup.ID)
+	testNewGroupByName, err := c.GetGroupByName(testName)
 
 	// Check for errors, check for identical groupIDs
 	if testNewGroup.ID != newGroup.ID {
 		t.Errorf("Unable to create group, or created group does not match ID lookup %v", err)
+	}
+	if testNewGroupByName[0].Name != newGroupData.Name {
+		t.Errorf("Unable to lookup group by name %v", err)
 	}
 
 	// Delete userGroup
 	err = c.DeleteUserGroup(newGroup.ID)
 	isGroupDeleted, err := c.GetUserGroup(newGroup.ID)
 
+	// Ensure group is deleted
 	if isGroupDeleted.ID != "" {
 		t.Errorf("Unable to delete test-created groupID %v", err)
 	}
