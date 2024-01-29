@@ -25,8 +25,21 @@ func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 	if testNewGroup.ID != newGroup.ID {
 		t.Errorf("Unable to create group, or created group does not match ID lookup %v", err)
 	}
-	if testNewGroupByName[0].Name != newGroupData.Name {
+	if testNewGroupByName.Name != newGroupData.Name {
 		t.Errorf("Unable to lookup group by name %v", err)
+	}
+
+	// Update UserGroup name to include "-updated"
+	updatedGroup, err := c.UpdateUserGroup(newGroup.ID, UserGroup{
+		Name: testName + "-updated",
+	})
+
+	// Verify UserGroup name changed
+	result, err := c.GetUserGroupByName(testName + "-updated")
+
+	// Check result values
+	if updatedGroup.Name != result.Name {
+		t.Errorf("Unable to update group %v", err)
 	}
 
 	// Delete userGroup

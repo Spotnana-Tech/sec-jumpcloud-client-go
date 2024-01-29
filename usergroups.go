@@ -146,7 +146,8 @@ func (c *Client) GetGroupMembers(groupId string) (groupMembers GroupMembership, 
 }
 
 // GetUserGroupByName returns a group by name
-func (c *Client) GetUserGroupByName(groupName string) (userGroup UserGroups, err error) {
+func (c *Client) GetUserGroupByName(groupName string) (userGroup UserGroup, err error) {
+	var results UserGroups
 	c.HostURL.Path = "/api/v2/usergroups"
 	// Limiting results to 1, and filtering by name... this should be unique
 	c.HostURL.RawQuery = "limit=1&filter=name:eq:" + groupName
@@ -155,6 +156,24 @@ func (c *Client) GetUserGroupByName(groupName string) (userGroup UserGroups, err
 	response, err := c.HTTPClient.Do(req)
 	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body) // response body is []byte
-	err = json.Unmarshal(body, &userGroup) // Unmarshal the JSON into our struct
+	err = json.Unmarshal(body, &results)   // Unmarshal the JSON into our struct
+	userGroup = results[0]                 // We only want the single result
+	return userGroup, err
+}
+
+// UpdateUserGroup updates a user group
+func (c *Client) UpdateUserGroup(groupId string, updatedUserGroup UserGroup) (userGroup UserGroup, err error) {
+	c.HostURL.Path = "/api/v2/usergroups/" + groupId
+	jsonBody, err := json.Marshal(updatedUserGroup)
+	request, err := http.NewRequest(
+		http.MethodPut,
+		c.HostURL.String(),
+		bytes.NewReader(jsonBody),
+	)
+	request.Header = c.Headers
+	response, err := c.HTTPClient.Do(request)
+	defer response.Body.Close()
+	body, err := io.ReadAll(response.Body)
+	err = json.Unmarshal(body, &userGroup)
 	return userGroup, err
 }
