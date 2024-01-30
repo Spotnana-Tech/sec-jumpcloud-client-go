@@ -48,7 +48,7 @@ func (c *Client) GetAllApplications() (allApplications AllApps, err error) {
 }
 
 // GetApplication returns a single application
-func (c *Client) GetApplication(appId string) (application AppDetail, err error) {
+func (c *Client) GetApplication(appId string) (application App, err error) {
 	c.HostURL.Path = "/api/v2/applications/" + appId
 	req, err := http.NewRequest(http.MethodGet, c.HostURL.String(), nil)
 	req.Header = c.Headers
