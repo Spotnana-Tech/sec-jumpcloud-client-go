@@ -251,3 +251,9 @@ type Sso struct {
 	URL         string    `json:"url,omitempty"`
 	Jit         *Jit      `json:"jit,omitempty"`
 }
+
+type AppAssociationModifier struct {
+	ID   string `json:"id,omitempty"`
+	OP   string `json:"op,omitempty"`
+	Type string `json:"type,omitempty"`
+}

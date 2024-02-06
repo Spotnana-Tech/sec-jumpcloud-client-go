@@ -114,10 +114,10 @@ func (c *Client) GetAllAppAssociations() (allData []map[string]interface{}, err 
 // AssociateGroupWithApp associates a group with an application
 func (c *Client) AssociateGroupWithApp(appId string, groupId string) (err error) {
 	c.HostURL.Path = "/api/v2/applications/" + appId + "/associations"
-	j, _ := json.Marshal(map[string]string{
-		"id":   groupId,
-		"op":   "add",
-		"type": "user_group",
+	j, _ := json.Marshal(AppAssociationModifier{
+		ID:   groupId,
+		OP:   "add",
+		Type: "user_group",
 	})
 	bodyReader := bytes.NewReader(j)
 
