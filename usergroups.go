@@ -48,7 +48,7 @@ func (c *Client) GetAllUserGroups() (allUserGroups UserGroups, err error) {
 }
 
 // CreateUserGroup creates a new user group
-func (c *Client) CreateUserGroup(newUser UserGroup) (userGroup NewUserGroup, err error) {
+func (c *Client) CreateUserGroup(newUser UserGroup) (userGroup UserGroup, err error) {
 	c.HostURL.Path = "/api/v2/usergroups"
 	jsonBody, err := json.Marshal(newUser)
 	request, err := http.NewRequest(
@@ -65,7 +65,7 @@ func (c *Client) CreateUserGroup(newUser UserGroup) (userGroup NewUserGroup, err
 }
 
 // CreateUserGroups creates multiple user groups
-func (c *Client) CreateUserGroups(newUserGroups []UserGroup) (userGroups []NewUserGroup, err error) {
+func (c *Client) CreateUserGroups(newUserGroups []UserGroup) (userGroups []UserGroup, err error) {
 	for _, usergroup := range newUserGroups {
 		new, err := c.CreateUserGroup(usergroup)
 		if err != nil {
@@ -77,7 +77,7 @@ func (c *Client) CreateUserGroups(newUserGroups []UserGroup) (userGroups []NewUs
 }
 
 // GetUserGroup query for a specific user group by ID
-func (c *Client) GetUserGroup(groupId string) (userGroup NewUserGroup, err error) {
+func (c *Client) GetUserGroup(groupId string) (userGroup UserGroup, err error) {
 	c.HostURL.Path = "/api/v2/usergroups/" + groupId
 	request, err := http.NewRequest(
 		http.MethodGet,
@@ -157,8 +157,12 @@ func (c *Client) GetUserGroupByName(groupName string) (userGroup UserGroup, err 
 	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body) // response body is []byte
 	err = json.Unmarshal(body, &results)   // Unmarshal the JSON into our struct
-	userGroup = results[0]                 // We only want the single result
-	return userGroup, err
+	if len(results) == 0 {
+		return userGroup, err
+	} else {
+		userGroup = results[0] // We only want the single result
+		return userGroup, err
+	}
 }
 
 // UpdateUserGroup updates a user group
