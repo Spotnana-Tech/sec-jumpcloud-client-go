@@ -1,8 +1,6 @@
 package jcclient
 
 import (
-	"encoding/json"
-	"fmt"
 	"math/rand"
 	"os"
 	"testing"
@@ -99,8 +97,6 @@ func TestClient_UserGroups_GetAllUserGroups(t *testing.T) {
 func TestClient_UserGroups_GetUserGroup(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	g, err := c.GetUserGroup("65244c966a73110001574efc")
-	gjson, _ := json.MarshalIndent(g, "", "  ")
-	fmt.Println(string(gjson))
 	if g.ID != "65244c966a73110001574efc" {
 		t.Errorf("No group returned")
 		t.Errorf("Function Error: %q", err)
