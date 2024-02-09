@@ -23,21 +23,12 @@ import (
 func main() {
 	// Create a new Jumpcloud client, pulling the API key from the environment
 	c, err := jcclient.NewClient(os.Getenv("JC_API_KEY"))
-	if err != nil {
-		log.Panic("Error creating client:", err)
-	}
-    
-	groups, err := c.GetAllUserGroups()             // Get all groups
-	for _, group := range groups {                  // Loop through each group
-		members, _ := c.GetGroupMembers(group.ID)   // Get all groupMembers in each group
-		fmt.Println(group.Name, group.ID, "-", len(members), "members")
-		// example-group 1234567890 - 21 members
-		
-		for _, member := range members {        // Loop through each groupMember
-			user, _ := c.GetUser(member.To.ID) // Lookup each member and get their details
-			fmt.Println(user.ID, user.Displayname, user.Email, user.Department)
-			// 0987654321 John Doe jdoe@spotnana.com Engineering
-		}
-	}
+	if err != nil {log.Panic("Error creating client:", err)}
+	
+	// Get all usergroups and print them
+	g, err := c.GetAllUserGroups() 
+	if err != nil {log.Panic("Error getting groups:", err)}
+	fmt.Println("Number of groups:" , len(g))
+	fmt.Println("Groups:", g)
 }
 ```

@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+// Test the creation and deletion of usergroups
 func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 
@@ -53,6 +54,7 @@ func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 	}
 }
 
+// Test creating multiple groups via function call
 func TestClient_UserGroups_CreateMultipleUserGroups(t *testing.T) {
 	// Create userGroup
 	c, _ := NewClient(os.Getenv("JC_API_KEY"))
@@ -85,6 +87,7 @@ func TestClient_UserGroups_CreateMultipleUserGroups(t *testing.T) {
 	}
 }
 
+// Test getting all groups via pagination
 func TestClient_UserGroups_GetAllUserGroups(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	groups, err := c.GetAllUserGroups()
@@ -94,6 +97,7 @@ func TestClient_UserGroups_GetAllUserGroups(t *testing.T) {
 	}
 }
 
+// Test getting a single group via ID
 func TestClient_UserGroups_GetUserGroup(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	g, err := c.GetUserGroup("65244c966a73110001574efc")
@@ -103,6 +107,7 @@ func TestClient_UserGroups_GetUserGroup(t *testing.T) {
 	}
 }
 
+// Test getting a user
 func TestClient_Users_GetRandomUser(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	groupId := "6479fcdf1be9850001728dec"
@@ -126,6 +131,7 @@ func TestClient_Users_GetRandomUser(t *testing.T) {
 	}
 }
 
+// Test getting all apps via pagination
 func TestClient_Apps_GetAllApps(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	apps, err := c.GetAllApplications()
@@ -136,6 +142,7 @@ func TestClient_Apps_GetAllApps(t *testing.T) {
 	}
 }
 
+// Test getting a single app via ID
 func TestClient_Apps_GetApp(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	app, err := c.GetApplication("64798af00ee9439afdfd9955")
@@ -154,25 +161,7 @@ func TestClient_Apps_GetApp(t *testing.T) {
 	}
 }
 
-// TODO This test is broken, runs too slow, useless
-//func TestClient_Apps_Client_GetAllAppAssociations(t *testing.T) {
-//	c, err := NewClient(os.Getenv("JC_API_KEY"))
-//	app, err := c.GetApplication("64798af00ee9439afdfd9955")
-//
-//	if app.ID != "64798af00ee9439afdfd9955" {
-//		t.Errorf("No app returned")
-//		t.Errorf("Function Error: %q", err)
-//	}
-//
-//	// This runs for a really long time and I'm not sure why
-//	associations, err := c.GetAllAppAssociations()
-//
-//	//fmt.Println(associations)
-//	if len(associations) == 0 {
-//		t.Errorf("No application group associations returned %v %v", app.ID, app.DisplayName)
-//	}
-//}
-
+// Test associating and removing a group from an app
 func TestClient_Apps_AssociateGroupWithApp(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	newGroup, err := c.CreateUserGroup(UserGroup{
@@ -204,5 +193,3 @@ func TestClient_Apps_AssociateGroupWithApp(t *testing.T) {
 		t.Errorf("Unable to delete test-created groupID %v", err)
 	}
 }
-
-// TODO More testing!
