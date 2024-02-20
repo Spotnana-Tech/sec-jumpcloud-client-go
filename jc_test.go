@@ -3,10 +3,11 @@ package jcclient
 import (
 	"math/rand"
 	"os"
+	"strings"
 	"testing"
 )
 
-// Test the creation and deletion of usergroups
+// TestClient_UserGroups_CreateAndDeleteUserGroup the creation and deletion of usergroups
 func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 
@@ -54,7 +55,7 @@ func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 	}
 }
 
-// Test creating multiple groups via function call
+// TestClient_UserGroups_CreateMultipleUserGroups creating multiple groups via function call
 func TestClient_UserGroups_CreateMultipleUserGroups(t *testing.T) {
 	// Create userGroup
 	c, _ := NewClient(os.Getenv("JC_API_KEY"))
@@ -87,7 +88,7 @@ func TestClient_UserGroups_CreateMultipleUserGroups(t *testing.T) {
 	}
 }
 
-// Test getting all groups via pagination
+// TestClient_UserGroups_GetAllUserGroups getting all groups via pagination
 func TestClient_UserGroups_GetAllUserGroups(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	groups, err := c.GetAllUserGroups()
@@ -97,20 +98,34 @@ func TestClient_UserGroups_GetAllUserGroups(t *testing.T) {
 	}
 }
 
-// Test getting a single group via ID
+// TestClient_UserGroups_GetUserGroup getting a single group via ID
 func TestClient_UserGroups_GetUserGroup(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
-	g, err := c.GetUserGroup("65244c966a73110001574efc")
-	if g.ID != "65244c966a73110001574efc" {
+	groups, err := c.GetAllUserGroups()
+	targetGroupId := groups[0].ID
+	g, err := c.GetUserGroup(targetGroupId)
+	if g.ID != targetGroupId {
 		t.Errorf("No group returned")
 		t.Errorf("Function Error: %q", err)
 	}
 }
 
-// Test getting a user
+// TestClient_Users_GetRandomUser getting a user
 func TestClient_Users_GetRandomUser(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
-	groupId := "6479fcdf1be9850001728dec"
+	var groupId string
+
+	// Get all groups, find a group with members
+	groups, err := c.GetAllUserGroups()
+	for _, group := range groups {
+		m, _ := c.GetGroupMembers(group.ID)
+		if len(m) > 0 {
+			groupId = group.ID
+			break
+		}
+	}
+
+	// Get group members
 	users, err := c.GetGroupMembers(groupId)
 
 	if len(users) == 0 {
@@ -131,7 +146,7 @@ func TestClient_Users_GetRandomUser(t *testing.T) {
 	}
 }
 
-// Test getting all apps via pagination
+// TestClient_Apps_GetAllApps getting all apps via pagination
 func TestClient_Apps_GetAllApps(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
 	apps, err := c.GetAllApplications()
@@ -142,45 +157,64 @@ func TestClient_Apps_GetAllApps(t *testing.T) {
 	}
 }
 
-// Test getting a single app via ID
+// TestClient_Apps_GetApp getting a single app via ID
 func TestClient_Apps_GetApp(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
-	app, err := c.GetApplication("64798af00ee9439afdfd9955")
-
-	if app.ID != "64798af00ee9439afdfd9955" {
-		t.Errorf("No app returned")
-		t.Errorf("Function Error: %q", err)
+	var targetAppId string
+	var targetAppName string
+	apps, err := c.GetAllApplications()
+	for _, app := range apps {
+		asoc, _ := c.GetAppAssociations(app.ID, "user_group")
+		if len(asoc) > 0 {
+			targetAppId = app.ID
+			targetAppName = app.DisplayName
+			break
+		}
 	}
 
 	associations, err := c.GetAppAssociations(
-		"64798af00ee9439afdfd9955",
+		targetAppId,
 		"user_group",
 	)
 	if len(associations) == 0 {
-		t.Errorf("No application group associations returned %v %v", app.ID, app.DisplayName)
+		t.Errorf("No application group associations returned %v %v", targetAppId, targetAppName)
+	}
+	if err != nil {
+		t.Errorf("Function Error: %q", err)
 	}
 }
 
-// Test associating and removing a group from an app
+// TestClient_Apps_AssociateGroupWithApp associating and removing a group from an app
+// This test looks for an application with `test` in the name and associates a group with it
+// This test will fail if there are no applications with `test` in the name
 func TestClient_Apps_AssociateGroupWithApp(t *testing.T) {
+	var targetAppId string
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
+
+	// Create group to associate with app
 	newGroup, err := c.CreateUserGroup(UserGroup{
 		Name:        "sec-jumpcloud-client-go-unit-test-app-association",
 		Description: "Created via sec-jumpcloud-client-go unit test, please delete me!",
 	})
-	awsSSOPOC, _ := c.GetApplication("632b3aae90fb7290ddb5667d") // AWS SSO POC App ID
 
+	// Find a test app
+	apps, err := c.GetAllApplications()
+	for _, app := range apps {
+		if strings.Contains(app.DisplayLabel, "test") {
+			targetAppId = app.ID
+		}
+	}
 	// Get userGroup
 	newGroupId, err := c.GetUserGroup(newGroup.ID)
 
 	// Associate group with app
-	err = c.AssociateGroupWithApp(awsSSOPOC.ID, newGroupId.ID)
+	err = c.AssociateGroupWithApp(targetAppId, newGroupId.ID)
 	if err != nil {
 		t.Errorf("No application group associations returned %v", err)
 	}
 
 	// Remove group from app
-	err = c.RemoveGroupFromApp(awsSSOPOC.ID, newGroupId.ID)
+	err = c.RemoveGroupFromApp(targetAppId, newGroupId.ID)
 	if err != nil {
 		t.Errorf("Unable to remove group from app %v", err)
 	}

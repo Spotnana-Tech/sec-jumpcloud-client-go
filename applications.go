@@ -9,6 +9,9 @@ import (
 )
 
 // GetAllApplications returns all applications
+//
+// Example:
+// allApps, err := c.GetAllApplications()
 func (c *Client) GetAllApplications() (allApplications AllApps, err error) {
 	// Prepare request
 	totalApps := 0
@@ -63,6 +66,9 @@ func (c *Client) GetAllApplications() (allApplications AllApps, err error) {
 }
 
 // GetApplication returns a single application
+//
+// Example:
+// app, err := c.GetApplication("5f5e3e3e4f7d3d7e3e3e3e3e")
 func (c *Client) GetApplication(appId string) (application App, err error) {
 	// Prepare request
 	c.HostURL.Path = "/api/v2/applications/" + appId
@@ -80,6 +86,9 @@ func (c *Client) GetApplication(appId string) (application App, err error) {
 
 // GetAppAssociations returns a single application
 // groupType can be either "user_group" or "user"
+//
+// Example:
+// appAssociations, err := c.GetAppAssociations("5f5e3e3e4f7d3d7e3e3e3e3e", "user_group")
 func (c *Client) GetAppAssociations(appId string, groupType string) (appAssociations AppAssociations, err error) {
 	// Prepare request
 	totalAssociations := 0
@@ -118,6 +127,9 @@ func (c *Client) GetAppAssociations(appId string, groupType string) (appAssociat
 }
 
 // AssociateGroupWithApp associates a group with an application
+//
+// Example:
+// err := c.AssociateGroupWithApp(appId: "5f5e3e3e4f7d3d7e3e3e3e3e", groupId: "5f5e3e3e4f7d3d7e3e3e3e3e")
 func (c *Client) AssociateGroupWithApp(appId string, groupId string) (err error) {
 	// Prepare request
 	c.HostURL.Path = "/api/v2/applications/" + appId + "/associations"
@@ -140,6 +152,9 @@ func (c *Client) AssociateGroupWithApp(appId string, groupId string) (err error)
 }
 
 // RemoveGroupFromApp removes a group from an application
+//
+// Example:
+// err := c.RemoveGroupFromApp(appId: "5f5e3e3e4f7d3d7e3e3e3e3e", groupId: "5f5e3e3e4f7d3d7e3e3e3e3e")
 func (c *Client) RemoveGroupFromApp(appId string, groupId string) (err error) {
 	// Prepare request
 	c.HostURL.Path = "/api/v2/applications/" + appId + "/associations"

@@ -1,3 +1,12 @@
+// jccclient is a package to interact with the JumpCloud API
+//
+// # Create a new client
+// c, err := jcclient.NewClient(os.Getenv("JC_API_KEY"))
+//
+// # Use the Client
+// groups, _ := c.GetAllUserGroups()
+//
+
 package jcclient
 
 import (
@@ -9,6 +18,7 @@ import (
 
 const HostURL = "https://console.jumpcloud.com"
 
+// Client is a struct to hold the client data and http client
 type Client struct {
 	HostURL    *url.URL
 	HTTPClient *http.Client
@@ -16,6 +26,9 @@ type Client struct {
 }
 
 // NewClient factory returns a prepared client
+//
+// Example:
+// c, err := jcclient.NewClient(os.Getenv("JC_API_KEY"))
 func NewClient(token string) (*Client, error) {
 	parsedUrl, err := url.Parse(HostURL)
 	c := Client{
@@ -34,7 +47,7 @@ func NewClient(token string) (*Client, error) {
 }
 
 // doRequest is a helper function to prepare http requests
-// This is not implemented yet
+// This is not implemented yet. Some methods need access to the request object still.
 func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	// Prepare and send request
 	req.Header = c.Headers

@@ -1,7 +1,6 @@
 package jcclient
 
 // UserGroup is sensitive due to the null values being empty structs when calling the API
-// Strongly consider reworking this and save yourself a headache
 type UserGroup struct {
 	Attributes              *Attributes              `json:"attributes,omitempty"`
 	Description             string                   `json:"description,omitempty"`
