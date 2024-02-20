@@ -12,7 +12,7 @@ import (
 
 func main() {
 	// Create a new Jumpcloud client
-	c, err := jcclient.NewClient("api_key")
+	c, err := jumpcloud.NewClient("api_key")
 	
 	// Get all usergroups
 	g, err := c.GetAllUserGroups() 

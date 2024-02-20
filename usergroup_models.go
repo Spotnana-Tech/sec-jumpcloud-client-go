@@ -1,4 +1,4 @@
-package jcclient
+package jumpcloud
 
 // UserGroup is sensitive due to the null values being empty structs when calling the API
 type UserGroup struct {

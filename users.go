@@ -1,4 +1,4 @@
-package jcclient
+package jumpcloud
 
 import (
 	"encoding/json"

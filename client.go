@@ -1,13 +1,13 @@
-// jccclient is a package to interact with the JumpCloud API
+// jumpcloud is a package to interact with the JumpCloud API
 //
 // # Create a new client
-// c, err := jcclient.NewClient(os.Getenv("JC_API_KEY"))
+// c, err := jumpcloud.NewClient(os.Getenv("JC_API_KEY"))
 //
 // # Use the Client
 // groups, _ := c.GetAllUserGroups()
 //
 
-package jcclient
+package jumpcloud
 
 import (
 	"io"
@@ -28,7 +28,7 @@ type Client struct {
 // NewClient factory returns a prepared client
 //
 // Example:
-// c, err := jcclient.NewClient(os.Getenv("JC_API_KEY"))
+// c, err := jumpcloud.NewClient(os.Getenv("JC_API_KEY"))
 func NewClient(token string) (*Client, error) {
 	parsedUrl, err := url.Parse(HostURL)
 	c := Client{
