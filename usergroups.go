@@ -9,9 +9,6 @@ import (
 )
 
 // GetAllUserGroups returns a list of all usergroups in Jumpcloud
-//
-// Example:
-// allUserGroups, err := c.GetAllUserGroups()
 func (c *Client) GetAllUserGroups() (allUserGroups UserGroups, err error) {
 	// Prepare request
 	c.HostURL.Path = "/api/v2/usergroups"
@@ -62,9 +59,6 @@ func (c *Client) GetAllUserGroups() (allUserGroups UserGroups, err error) {
 }
 
 // CreateUserGroup creates a new user group
-//
-// Example:
-// newGroup, err := c.CreateUserGroup(UserGroup{Name: "New Group"})
 func (c *Client) CreateUserGroup(newUser UserGroup) (userGroup UserGroup, err error) {
 	// Prepare request
 	c.HostURL.Path = "/api/v2/usergroups"
@@ -87,9 +81,6 @@ func (c *Client) CreateUserGroup(newUser UserGroup) (userGroup UserGroup, err er
 }
 
 // CreateUserGroups creates multiple user groups
-//
-// Example:
-// newGroups, err := c.CreateUserGroups([]UserGroup{{Name: "New Group 1"}, {Name: "New Group 2"}})
 func (c *Client) CreateUserGroups(newUserGroups []UserGroup) (userGroups []UserGroup, err error) {
 	// Iterate through the user groups and create them
 	for _, usergroup := range newUserGroups {
@@ -104,9 +95,6 @@ func (c *Client) CreateUserGroups(newUserGroups []UserGroup) (userGroups []UserG
 }
 
 // GetUserGroup query for a specific user group by ID
-//
-// Example:
-// userGroup, err := c.GetUserGroup("5f5e3e3e4f7d3d7e3e3e3e3e")
 func (c *Client) GetUserGroup(groupId string) (userGroup UserGroup, err error) {
 	// Prepare request
 	c.HostURL.Path = "/api/v2/usergroups/" + groupId
@@ -128,9 +116,6 @@ func (c *Client) GetUserGroup(groupId string) (userGroup UserGroup, err error) {
 }
 
 // DeleteUserGroup deletes a user group
-//
-// Example:
-// err := c.DeleteUserGroup("5f5e3e3e4f7d3d7e3e3e3e3e")
 func (c *Client) DeleteUserGroup(groupId string) (err error) {
 	// Prepare request
 	c.HostURL.Path = "/api/v2/usergroups/" + groupId
@@ -149,9 +134,6 @@ func (c *Client) DeleteUserGroup(groupId string) (err error) {
 }
 
 // GetGroupMembers returns a list of users in a group
-//
-// Example:
-// groupMembers, err := c.GetGroupMembers("5f5e3e3e4f7d3d7e3e3e3e3e")
 func (c *Client) GetGroupMembers(groupId string) (groupMembers GroupMembership, err error) {
 	// Prepare request
 	c.HostURL.Path = "/api/v2/usergroups/" + groupId + "/members"
@@ -201,9 +183,6 @@ func (c *Client) GetGroupMembers(groupId string) (groupMembers GroupMembership, 
 }
 
 // GetUserGroupByName returns a group by name
-//
-// Example:
-// userGroup, err := c.GetUserGroupByName("New Group")
 func (c *Client) GetUserGroupByName(groupName string) (userGroup UserGroup, err error) {
 	// Prepare request
 	var results UserGroups
@@ -232,9 +211,6 @@ func (c *Client) GetUserGroupByName(groupName string) (userGroup UserGroup, err 
 }
 
 // UpdateUserGroup updates a user group
-//
-// Example:
-// updatedGroup, err := c.UpdateUserGroup("5f5e3e3e4f7d3d7e3e3e3e3e", UserGroup{Name: "Updated Group"})
 func (c *Client) UpdateUserGroup(groupId string, updatedUserGroup UserGroup) (userGroup UserGroup, err error) {
 	// If update does not contain a description field, set it to the old description
 	// We do this because the API will overwrite the description field with an empty string if not passed

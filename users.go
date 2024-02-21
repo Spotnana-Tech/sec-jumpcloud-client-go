@@ -7,9 +7,6 @@ import (
 )
 
 // GetUser returns the details of a user by ID
-//
-// Example:
-// user, err := c.GetUser("5f5e3e3e")
 func (c *Client) GetUser(userId string) (user SystemUser, err error) {
 	// Prepare request
 	c.HostURL.Path = "/api/systemusers/" + userId

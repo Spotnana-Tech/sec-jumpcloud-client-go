@@ -4,7 +4,7 @@
 // c, err := jumpcloud.NewClient(os.Getenv("JC_API_KEY"))
 //
 // # Use the Client
-// groups, _ := c.GetAllUserGroups()
+// groups, err := c.GetAllUserGroups()
 //
 
 package jumpcloud
@@ -26,9 +26,7 @@ type Client struct {
 }
 
 // NewClient factory returns a prepared client
-//
-// Example:
-// c, err := jumpcloud.NewClient(os.Getenv("JC_API_KEY"))
+// token is the JumpCloud API key
 func NewClient(token string) (*Client, error) {
 	parsedUrl, err := url.Parse(HostURL)
 	c := Client{
