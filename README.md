@@ -1,5 +1,9 @@
 # sec-jumpcloud-client-go
-### A go client for Jumpcloud
+### A Go client for Jumpcloud
+### "Jumpcloud" is a trademark of Jumpcloud, Inc. 
+### "Go" is a trademark of Google LLC or its affiliate ("Google") for its programming language ### (see https://go.dev/brand). 
+### These marks are used nominatively to indicate the nature and function of Spotnana's 
+### source code, which is neither sponsored or endorsed by Jumpcloud, Inc. or Google.
 [![Tests](https://github.com/Spotnana-Tech/sec-jumpcloud-client-go/actions/workflows/go.yml/badge.svg)](https://github.com/Spotnana-Tech/sec-jumpcloud-client-go/actions/workflows/go.yml)
 
 # Example Usage
