@@ -241,3 +241,24 @@ func (c *Client) UpdateUserGroup(groupId string, updatedUserGroup UserGroup) (us
 	err = json.Unmarshal(body, &userGroup)
 	return userGroup, err
 }
+
+func (c *Client) AddUserToGroup(groupId, userId string) (bool, error) {
+	// Prepare request
+	payload := map[string]string{"op": "add", "type": "user", "id": userId}
+	c.HostURL.Path = "/api/v2/usergroups/" + groupId + "/members"
+	jsonBody, err := json.Marshal(payload)
+	request, err := http.NewRequest(
+		http.MethodPut,
+		c.HostURL.String(),
+		bytes.NewReader(jsonBody),
+	)
+	request.Header = c.Headers
+
+	// Send request
+	response, err := c.HTTPClient.Do(request)
+	defer response.Body.Close()
+	if response.StatusCode != 204 {
+		return false, err
+	}
+	return true, nil
+}
