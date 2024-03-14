@@ -32,9 +32,15 @@ func (c *Client) GetUserIDFromEmail(userEmail string) (string, error) {
 	// Prepare request
 	var searchStruct struct {
 		TotalCount int `json:"totalCount"`
-		Results    []SystemUser
+		Results    []struct {
+			ID string `json:"_id"`
+		}
 	}
-	params := url.Values{"filter": {"email:$eq:" + userEmail}}
+
+	params := url.Values{
+		"filter": {"email:$eq:" + userEmail},
+		"fields": {"_id"},
+	}
 	c.HostURL.Path = "/api/systemusers"
 	c.HostURL.RawQuery = params.Encode()
 	req, err := http.NewRequest(http.MethodGet, c.HostURL.String(), nil)
