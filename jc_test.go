@@ -144,6 +144,12 @@ func TestClient_Users_GetRandomUser(t *testing.T) {
 		t.Errorf("No user returned")
 		t.Errorf("Function Error: %q", err)
 	}
+
+	randomUserEmailLookup, err := c.GetUserIDFromEmail(randomUser.Email)
+
+	if randomUserEmailLookup != randomUserId {
+		t.Errorf("Unable to lookup user by email")
+	}
 }
 
 // TestClient_Apps_GetAllApps getting all apps via pagination
