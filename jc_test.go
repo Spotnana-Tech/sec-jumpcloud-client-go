@@ -145,10 +145,14 @@ func TestClient_Users_GetRandomUser(t *testing.T) {
 		t.Errorf("Function Error: %q", err)
 	}
 
-	randomUserEmailLookup, err := c.GetUserIDFromEmail(randomUser.Email)
+	randomUserEmailFromIdLookup, _ := c.GetUserEmailFromID(randomUserId)
+	randomUserIDFromEmailLookup, err := c.GetUserIDFromEmail(randomUser.Email)
 
-	if randomUserEmailLookup != randomUserId {
+	if randomUserIDFromEmailLookup != randomUserId {
 		t.Errorf("Unable to lookup user by email")
+	}
+	if randomUserEmailFromIdLookup != randomUser.Email {
+		t.Errorf("Unable to lookup user by ID")
 	}
 }
 

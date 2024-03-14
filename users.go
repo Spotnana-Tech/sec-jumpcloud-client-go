@@ -60,3 +60,37 @@ func (c *Client) GetUserIDFromEmail(userEmail string) (string, error) {
 	// Returning the first result
 	return searchStruct.Results[0].ID, err
 }
+
+// GetUserEmailFromID returns the details of a user
+func (c *Client) GetUserEmailFromID(userID string) (string, error) {
+	// Prepare request
+	var searchStruct struct {
+		TotalCount int `json:"totalCount"`
+		Results    []struct {
+			Email string `json:"email"`
+		}
+	}
+
+	params := url.Values{
+		"filter": {"_id:$eq:" + userID},
+		"fields": {"email"},
+	}
+	c.HostURL.Path = "/api/systemusers"
+	c.HostURL.RawQuery = params.Encode()
+	req, err := http.NewRequest(http.MethodGet, c.HostURL.String(), nil)
+	req.Header = c.Headers
+
+	// Send request
+	response, err := c.HTTPClient.Do(req)
+	defer response.Body.Close()
+	if err != nil {
+		return "", err
+	}
+
+	// Parse response
+	body, _ := io.ReadAll(response.Body)
+	err = json.Unmarshal(body, &searchStruct)
+
+	// Returning the first result
+	return searchStruct.Results[0].Email, err
+}
