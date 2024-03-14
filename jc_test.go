@@ -7,6 +7,16 @@ import (
 	"testing"
 )
 
+// Check if user is in group
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
 // TestClient_UserGroups_CreateAndDeleteUserGroup the creation and deletion of usergroups
 func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
 	c, err := NewClient(os.Getenv("JC_API_KEY"))
@@ -236,4 +246,78 @@ func TestClient_Apps_AssociateGroupWithApp(t *testing.T) {
 	if isGroupDeleted.ID != "" {
 		t.Errorf("Unable to delete test-created groupID %v", err)
 	}
+}
+
+// TestClient_Groups_AddToGroup selects a random user, creates a group, and assigns the user to the group
+func TestClient_Groups_AddToGroup(t *testing.T) {
+	c, err := NewClient(os.Getenv("JC_API_KEY"))
+	if err != nil {
+		t.Errorf("Error creating client: %v", err)
+	}
+	// Get all groups, find a group with members
+	var groupId string
+	groups, err := c.GetAllUserGroups()
+	for _, group := range groups {
+		m, _ := c.GetGroupMembers(group.ID)
+		if len(m) > 0 {
+			groupId = group.ID
+			break
+		}
+	}
+	// Get group members
+	users, err := c.GetGroupMembers(groupId)
+
+	if len(users) == 0 {
+		t.Errorf("No users returned")
+		t.Errorf("Function Error: %q", err)
+	}
+	// Random index from users slice
+	randomInt := rand.Int() % len(users)
+
+	// Id of random user
+	randomUserId := users[randomInt].To.ID
+
+	// Create userGroup
+	newGroup, err := c.CreateUserGroup(UserGroup{
+		Name:        "sec-jumpcloud-client-go-unit-test-user-association",
+		Description: "Created via sec-jumpcloud-client-go unit test, please delete me!",
+	})
+
+	ok, _ := c.AddUserToGroup(newGroup.ID, randomUserId)
+	if !ok {
+		t.Errorf("Unable to add user to group")
+	}
+
+	// Create slice of userIds
+	var groupMembers []string
+	members, _ := c.GetGroupMembers(newGroup.ID)
+	for _, m := range members {
+		groupMembers = append(groupMembers, m.To.ID)
+	}
+	// Check for user membership
+	result := contains(groupMembers, randomUserId)
+	if !result {
+		t.Errorf("Unable to find user in group")
+	}
+
+	// Remove user from group
+	ok2, _ := c.RemoveUserFromGroup(newGroup.ID, randomUserId)
+	if !ok2 {
+		t.Errorf("Unable to remove user from group")
+	}
+
+	// Create slice of userIds
+	var groupMembers2 []string
+	members, _ = c.GetGroupMembers(newGroup.ID)
+	for _, m := range members {
+		groupMembers2 = append(groupMembers2, m.To.ID)
+	}
+
+	// Check for user membership
+	result2 := contains(groupMembers2, randomUserId)
+	if result2 {
+		t.Errorf("User still a group member after removal")
+	}
+	// Delete userGroup
+	err = c.DeleteUserGroup(newGroup.ID)
 }
