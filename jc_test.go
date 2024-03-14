@@ -3,19 +3,10 @@ package jumpcloud
 import (
 	"math/rand"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 )
-
-// Check if user is in group
-func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
 
 // TestClient_UserGroups_CreateAndDeleteUserGroup the creation and deletion of usergroups
 func TestClient_UserGroups_CreateAndDeleteUserGroup(t *testing.T) {
@@ -295,7 +286,7 @@ func TestClient_Groups_AddToGroup(t *testing.T) {
 		groupMembers = append(groupMembers, m.To.ID)
 	}
 	// Check for user membership
-	result := contains(groupMembers, randomUserId)
+	result := slices.Contains(groupMembers, randomUserId)
 	if !result {
 		t.Errorf("Unable to find user in group")
 	}
@@ -314,7 +305,7 @@ func TestClient_Groups_AddToGroup(t *testing.T) {
 	}
 
 	// Check for user membership
-	result2 := contains(groupMembers2, randomUserId)
+	result2 := slices.Contains(groupMembers2, randomUserId)
 	if result2 {
 		t.Errorf("User still a group member after removal")
 	}
