@@ -36,7 +36,7 @@ func (c *Client) GetUserIDFromEmail(userEmail string) (string, error) {
 			ID string `json:"_id"`
 		}
 	}
-
+	// Filter on email and return _id field only
 	params := url.Values{
 		"filter": {"email:$eq:" + userEmail},
 		"fields": {"_id"},
@@ -58,7 +58,13 @@ func (c *Client) GetUserIDFromEmail(userEmail string) (string, error) {
 	err = json.Unmarshal(body, &searchStruct)
 
 	// Returning the first result
-	return searchStruct.Results[0].ID, err
+	// If no results the return empty string, this means that the search failed
+	if len(searchStruct.Results) == 0 {
+		return "", err
+	} else {
+		// If we have results, return the first result
+		return searchStruct.Results[0].ID, err
+	}
 }
 
 // GetUserEmailFromID returns the details of a user
@@ -70,7 +76,7 @@ func (c *Client) GetUserEmailFromID(userID string) (string, error) {
 			Email string `json:"email"`
 		}
 	}
-
+	// Filter on userId and return email field only
 	params := url.Values{
 		"filter": {"_id:$eq:" + userID},
 		"fields": {"email"},
@@ -92,5 +98,11 @@ func (c *Client) GetUserEmailFromID(userID string) (string, error) {
 	err = json.Unmarshal(body, &searchStruct)
 
 	// Returning the first result
-	return searchStruct.Results[0].Email, err
+	// If no results the return empty string, this means that the search failed
+	if len(searchStruct.Results) == 0 {
+		return "", err
+	} else {
+		// If we have results, return the first result
+		return searchStruct.Results[0].Email, err
+	}
 }
