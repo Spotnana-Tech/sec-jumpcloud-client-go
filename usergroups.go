@@ -241,3 +241,51 @@ func (c *Client) UpdateUserGroup(groupId string, updatedUserGroup UserGroup) (us
 	err = json.Unmarshal(body, &userGroup)
 	return userGroup, err
 }
+
+// AddUserToGroup adds a user to a group
+func (c *Client) AddUserToGroup(groupId, userId string) (bool, error) {
+	// Prepare request
+	payload := map[string]string{"op": "add", "type": "user", "id": userId}
+	jsonBody, err := json.Marshal(payload)
+	c.HostURL.Path = "/api/v2/usergroups/" + groupId + "/members"
+	request, err := http.NewRequest(
+		http.MethodPost,
+		c.HostURL.String(),
+		bytes.NewReader(jsonBody),
+	)
+	request.Header = c.Headers
+
+	// Send request
+	response, err := c.HTTPClient.Do(request)
+	defer response.Body.Close()
+
+	// Check for 204 meaning OK
+	if response.StatusCode != 204 {
+		return false, err
+	}
+	return true, nil
+}
+
+// RemoveUserFromGroup removes a user from a group
+func (c *Client) RemoveUserFromGroup(groupId, userId string) (bool, error) {
+	// Prepare request
+	payload := map[string]string{"op": "remove", "type": "user", "id": userId}
+	jsonBody, err := json.Marshal(payload)
+	c.HostURL.Path = "/api/v2/usergroups/" + groupId + "/members"
+	request, err := http.NewRequest(
+		http.MethodPost,
+		c.HostURL.String(),
+		bytes.NewReader(jsonBody),
+	)
+	request.Header = c.Headers
+
+	// Send request
+	response, err := c.HTTPClient.Do(request)
+	defer response.Body.Close()
+
+	// Check for 204 meaning OK
+	if response.StatusCode != 204 {
+		return false, err
+	}
+	return true, nil
+}
