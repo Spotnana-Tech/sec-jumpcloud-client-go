@@ -3,8 +3,10 @@ package jumpcloud
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
@@ -55,6 +57,34 @@ func (c *Client) GetAllUserGroups() (allUserGroups UserGroups, err error) {
 			return nil, err
 		}
 	}
+	return allUserGroups, err
+}
+
+// SearchUserGroups returns top 5 hits on the field
+func (c *Client) SearchUserGroups(field, value string, limit int) (allUserGroups UserGroups, err error) {
+	// Prepare request
+	c.HostURL.Path = "/api/v2/usergroups"
+	params := url.Values{
+		"limit":  {strconv.Itoa(limit)},
+		"skip":   {"0"},
+		"filter": {field + ":search:" + value},
+	}
+	fmt.Println(field + ":eq:" + value)
+	c.HostURL.RawQuery = params.Encode()
+	req, err := http.NewRequest(http.MethodGet, c.HostURL.String(), nil)
+	req.Header = c.Headers
+
+	// Send request
+	response, err := c.HTTPClient.Do(req)
+	defer response.Body.Close()
+
+	// Parse response
+	body, err := io.ReadAll(response.Body)
+	err = json.Unmarshal(body, &allUserGroups)
+	if err != nil {
+		return nil, err
+	}
+
 	return allUserGroups, err
 }
 

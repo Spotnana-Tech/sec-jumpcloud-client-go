@@ -1,6 +1,7 @@
 package jumpcloud
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"strings"
@@ -320,4 +321,17 @@ func TestClient_Groups_AddToGroup(t *testing.T) {
 	}
 	// Delete userGroup
 	err = c.DeleteUserGroup(newGroup.ID)
+}
+
+// TestClient_Groups_SearchForGroup searches for a group by name
+func TestClient_Groups_SearchForGroup(t *testing.T) {
+	c, err := NewClient(os.Getenv("JC_API_KEY"))
+	groups, err := c.SearchUserGroups("name", "a", 3)
+	for _, g := range groups {
+		fmt.Println(g.Name)
+	}
+	if len(groups) == 0 {
+		t.Errorf("No groups returned")
+		t.Errorf("Function Error: %q", err)
+	}
 }
