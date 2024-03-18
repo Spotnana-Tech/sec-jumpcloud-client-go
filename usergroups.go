@@ -3,7 +3,6 @@ package jumpcloud
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -69,7 +68,6 @@ func (c *Client) SearchUserGroups(field, value string, limit int) (allUserGroups
 		"skip":   {"0"},
 		"filter": {field + ":search:" + value},
 	}
-	fmt.Println(field + ":eq:" + value)
 	c.HostURL.RawQuery = params.Encode()
 	req, err := http.NewRequest(http.MethodGet, c.HostURL.String(), nil)
 	req.Header = c.Headers
