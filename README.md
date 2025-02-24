@@ -1,6 +1,8 @@
 # sec-jumpcloud-client-go
 ### A Go client for Jumpcloud
 
+This project is archived.
+
 _"Jumpcloud" is a trademark of Jumpcloud, Inc.
 "Go" is a trademark of Google LLC or its affiliate ("Google") for its programming language (see https://go.dev/brand). 
 These marks are used nominatively to indicate the nature and function of Spotnana's 
